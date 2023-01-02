@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+:root{
+    --main-bg:#f8fafc;
+    --main-text-color:#475569;
+    --main-border-color:#0f172a;
+    --main-hover-color:#cbd5e1;
+    --main-hover-button-foreground:#334155;
+    --main-button-foreground:#1e293b;
+    --main-button-background:#34d399;
+}
+
+body{
+    margin: 0;
+    font-family: "Open Sans",sans-serif;
+}
+
+#container{
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    position: relative;
+    width:100%;
+    color: var(--main-text-color);
+}
+
+#sidebar{
+    position: relative;
+    width:300px;
+    background-color:var(--main-bg);
+    height: 100vh;
+    border-right: 3px solid var(--main-border-color);
+    padding:20px;
+    box-shadow: 4px 4px 4px 4px var(--main-bg);
+}
+
+button{
+    border: 1px solid var(--main-button-background);
+    background-color: var(--main-button-background);
+    color:var(--main-button-foreground);
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all ease-in-out 0.5s;
+    box-shadow: inset var(--main-button-background) 2px 2px 2px 2px;
+}
+
+#current_user{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: fit-content;
+}
+
+#current_user *{
+    display: inline-block;
+    position: relative;
+    margin:1px;
+    padding:0px;
+    text-transform: capitalize;
+}
+
+#current_user .username{
+    font-weight:bold;
+}
+
+#current_user .title{
+    font-style: oblique;
+    font-size: medium;
+    font-weight: 300;
+    text-transform: capitalize;
+}
+
+#sidebar_header{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.sidebar_link{
+    display: block;
+    position: relative;
+    padding-left: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--main-text-color);
+}
+
+.active{
+    border-left: solid 2px var(--main-text-color);
+}
+
+.sidebar_link:hover{
+    position: relative;
+    cursor: pointer;
+    color: var(--main-border-color);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-left:2px solid var(--main-border-color);
+    transition: all ease-in 0.2s;
+}
+
+#content{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color:var(--main-bg);
+    padding-top: 50px;
+}
+
+#add_employee_form{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 90%;
+    border-radius: 8px;
+    height: fit-content;
+    padding:16px;
+    justify-content: flex-start;
+    border: 2px solid var(--main-border-color);
+}
+
+.input_container{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+}
+
+.group{
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+}
+
+#add_employee_form h2,.input_container label{
+    text-transform: capitalize;
+    padding-bottom: 3px;
+    font-weight: 400;
+    color: var(--main-text-color);
+    font-weight: bold;
+}
+
+.input_container input,.input_container select{
+    padding: 12px;
+    margin-bottom: 12px;
+    font-weight: 400;
+    border: 1px solid var(--main-border-color);
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+    border-radius: 4px;
+    outline: none;
+}
+
+.input_container select,.input_container select option{
+    text-transform: uppercase;
+}
+
+.group button{
+    width: 100%;
+}
+
+.group *:first-child{
+    margin-right: 24px;
+}
+
+.secondary{
+    background-color:var(--main-bg);
+    box-shadow: none;
+    border: 1px solid var(--main-border-color);
+}
+
+#employee_table{
+    position: relative;
+    border-collapse: collapse;
+    width: 90%;
+}
+
+tr{
+    border-bottom: 2px solid var(--main-border-color);
+}
+
+tbody tr:nth-child(even),thead *{
+    background-color:var(--main-hover-color);
+}
+
+th{
+    text-transform: uppercase;
+}
+
+th,td{
+    text-align: left;
+    padding:8px 12px;
+}
+
+.table_cell{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.table_cell *{
+    margin:0;
+}
+
+.table_cell *:first-child{
+    margin-right: 16px;
+}
+
+.delete_employee{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:var(--main-button-foreground);
+    background-color: var(--main-button-background);
+    border: var(--main-border-color);
+    padding:12px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
