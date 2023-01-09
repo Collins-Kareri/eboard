@@ -1,4 +1,5 @@
 -- Creating the initial database
+DROP database proj_database;
 CREATE DATABASE IF NOT EXISTS proj_database;
 
 -- Customer table creation
@@ -29,10 +30,53 @@ INSERT INTO `proj_database`.`customers` VALUES
 
  
 -- Employees table creation
-CREATE TABLE IF NOT EXISTS `proj_database`.`employees` (` id` varchar(5), `Employee_id` int(2), ` job_email_address` varchar(19), ` first_name` varchar(9), ` last_name` varchar(9), ` id_number` int(8), ` contact_no.` int(9), `home_address` varchar(17), `DOB` varchar(10), `Job_title` varchar(7), `Department` varchar(7), `Hire_date` varchar(10), `Salary/m(KSH)` varchar(7)) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS `proj_database`.`employees` (
+  `id` varchar(255),
+  `Employee_id` int(2),
+  `job_email_address` varchar(255),
+  `first_name` varchar(255),
+  `last_name` varchar(255),
+  `id_number` int(8),
+  `contact_no` int(9),
+  `home_address` varchar(255),
+  `DOB` varchar(255),
+  `Job_title` varchar(255),
+  `Department` varchar(255),
+  `Hire_date` varchar(255),
+  `Salary` varchar(255)
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- insert data into employee TABLE
-INSERT INTO `proj_database`.`employees` (` id`, `Employee_id`, ` job_email_address`, ` first_name`, ` last_name`, ` id_number`, ` contact_no.`, `home_address`, `DOB`, `Job_title`, `Department`, `Hire_date`, `Salary/m(KSH)`) VALUES ('TC001', 1, 'jndirangu@tc.co.ke', 'Jackline ', 'Ndirangu', 20012548, 734889654, 'westlands nairobi', '1/20/1970', 'CEO', 'CEO', '12/20/2022', '500,000'),
+INSERT INTO `proj_database`.`employees` (
+    `id`,
+    `Employee_id`,
+    `job_email_address`,
+    `first_name`,
+    `last_name`,
+    `id_number`,
+    `contact_no`,
+    `home_address`,
+    `DOB`,
+    `Job_title`,
+    `Department`,
+    `Hire_date`,
+    `Salary`
+  )
+VALUES (
+    'TC001',
+    1,
+    'jndirangu@tc.co.ke',
+    'Jackline ',
+    'Ndirangu',
+    20012548,
+    734889654,
+    'westlands nairobi',
+    '1/20/1970',
+    'CEO',
+    'CEO',
+    '12/20/2022',
+    '500,000'
+  ),
  ('TC002', 2, 'kbaliaj@tc.co.ke', 'Kiptanui ', 'Baliaj', 20145698, 722894563, 'nairobi', '8/4/1996', 'MANAGER', 'Sales', '1/4/2023', '250000'),
  ('TC003', 3, 'ckareri@tc.co.ke', 'Collins ', 'Kareri', 21478963, 719333456, 'parklands nairobi', '12/6/1990', 'MANAGER', 'IT', '1/4/2023', '250,000'),
  ('TC004', 4, 'dakoi@tc.co.ke', 'Dvock ', 'Akoi', 22589643, 718565656, 'nairobi', '6/4/1995', 'MANAGER', 'Finance', '1/4/2023', '250000'),
