@@ -1,78 +1,137 @@
+<!-- id, job_email_address, first_name, last_name, id_number, contact_no, home_address, DOB, Job_title, Department, Hire_date, Salary -->
+
 <form id="add_employee_form" action="">
-                <h2>Add Employee</h2>
+	<h2>Add Employee</h2>
 
-                <section class="group">
-                    <div class="input_container">
-                        <label for="first_name">
-                        First Name
-                        </label>
-                        <input name="first_name" id="first_name" type="text" required/>
-                    </div>
+	<!-- first name and last name -->
+	<section class="group">
+		<div class="input_container">
+			<label for="first_name"> First Name </label>
+			<input
+				name="first_name"
+				id="first_name"
+				type="text"
+				required
+				placeholder="enter first name" />
+		</div>
 
-                    <div class="input_container">
-                        <label for="last_name">
-                            Last Name
-                        </label>
-                        <input name="last_name" id="last_name" type="text" required/>
-                    </div>
-                </section>
-                
-                
-                <div class="input_container">
-                    <label for="email">
-                        Email
-                    </label>
-                    <input name="email" id="email" type="email" required/>
-                </div>
-                
-                <section class="group">
-                    <div class="input_container">
-                        <label for="department">
-                            Department
-                        </label>
-                        <select name="department" id="department">
-                            <option value="hr">hr</option>
-                            <option value="finance">finance</option>
-                            <option value="IT">it</option>
-                            <option value="marketing">marketing</option>
-                            <option value="legal">legal</option>
-                            <option value="outreach">outreach</option>
-                        </select>
-                    </div>
+		<div class="input_container">
+			<label for="last_name"> Last Name </label>
+			<input
+				name="last_name"
+				id="last_name"
+				type="text"
+				required
+				placeholder="enter last name" />
+		</div>
+	</section>
 
-                    <div class="input_container">
-                        <label for="position">
-                            Position
-                        </label>
-                        <select name="position" id="position">
-                            <option value="manager">manager</option>
-                            <option value="member">member</opt>
-                        </select>
-                    </div>
-                </section>
+	<!-- id and countries id number -->
+	<section class="group">
+		<div class="input_container">
+			<label for="id"> Employee Id </label>
+			<input
+				name="id"
+				id="id"
+				type="text"
+				required
+				placeholder="employee id format TC***" />
+		</div>
 
-                <div class="input_container">
-                    <label for="phone_no">
-                        Phone Number
-                    </label>
-                    <input name="phone_no" id="phone_no" type="text" required/>
-                </div>
-                
-                <div class="input_container">
-                    <label for="employee_status">
-                    Employee Status
-                    </label>
-                    <select name="employee_status" id="employee_status" required>
-                        <option value="full_time">full-time</option>
-                        <option value="part_time">part-time</option>
-                        <option value="contract">contract</option>
-                        <option value="laid_off">laid-off</option>
-                    </select>
-                </div>
-                
-                <section class="group">
-                    <button type="reset" class="secondary">Clear Fields</button>
-                    <button type="submit">Add Employee</button>
-                </section>
-                
-            </form>
+		<div class="input_container">
+			<label for="id_number"> Id Number </label>
+			<input
+				name="id_number"
+				id="id_number"
+				type="text"
+				required
+				placeholder="enter country id card number" />
+		</div>
+	</section>
+
+	<!-- email -->
+	<div class="input_container">
+		<label for="email"> Email </label>
+		<input
+			name="email"
+			id="email"
+			type="email"
+			required
+			placeholder="enter work mail" />
+	</div>
+
+	<!-- departments and job_title -->
+	<section class="group">
+		<div class="input_container">
+			<label for="department"> Department </label>
+			<select name="department" id="department">
+				<option value="hr">hr</option>
+				<option value="sales">sales</option>
+				<option value="finance">finance</option>
+				<option value="IT">it</option>
+				<option value="marketing">marketing</option>
+				<option value="legal">legal</option>
+				<option value="outreach">outreach</option>
+			</select>
+		</div>
+
+		<div class="input_container">
+			<label for="job_title"> Position </label>
+			<select name="job_title" id="job_title">
+				<option value="manager">manager</option>
+				<option value="officer">officer</option>
+			</select>
+		</div>
+	</section>
+
+	<!-- contact_no -->
+	<div class="input_container">
+		<label for="contact_no">Contact number</label>
+		<input
+			name="contact_no"
+			id="contact_no"
+			type="text"
+			required
+			placeholder="enter phone number" />
+	</div>
+
+	<!-- home_address -->
+	<div class="input_container">
+		<label for="home_address">Home Address</label>
+		<input
+			name="home_address"
+			id="home_address"
+			type="text"
+			required
+			placeholder="enter town city or just city" />
+	</div>
+
+	<!-- Hire_date and DOB -->
+	<section class="group">
+		<div class="input_container">
+			<label for="DOB"> DOB </label>
+			<input
+				name="DOB"
+				id="DOB"
+				type="text"
+				required
+				placeholder="dd/mm/yyyy" />
+		</div>
+
+		<div class="input_container">
+			<label for="hire_date"> Hire Date </label>
+			<input
+				name="hire_date"
+				id="hire_date"
+				type="text"
+				required
+				placeholder="dd/mm/yyyy" />
+		</div>
+	</section>
+
+	<!-- form buttons -->
+	<section class="group">
+		<button type="reset" class="secondary">Clear Fields</button>
+		<button type="submit">Add Employee</button>
+	</section>
+</form>
