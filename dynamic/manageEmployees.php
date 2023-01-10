@@ -2,7 +2,7 @@
 include "incl/header.php"
 ?>
 
-<!-- get employees adn store the data in an array -->
+<!-- get employees and store the data in an array -->
 <?php
 $sql = 'SELECT * FROM employees';
 $result = mysqli_query($conn, $sql);
@@ -89,7 +89,6 @@ $employees = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         <?php echo $employee["home_address"]; ?>
                     </p>
                 </section>
-
 
                 <section class="card_group">
                     <p>

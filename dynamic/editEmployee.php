@@ -43,11 +43,11 @@ try {
             //on success redirect to employees table
             header("Location: manageEmployees.php");
         } else {
-            echo "Error: " . mysqli_error($conn);
+            echo "<script>alert('Error: could not edit employee.');</script>";
         }
     }
 } catch (Exception $err) {
-    echo "error: ", $err->getMessage();
+    echo "<script>alert('Error: could not edit employee.');</script>";
 }
 ?>
 
@@ -60,6 +60,7 @@ try {
         <h2>Edit Employee</h2>
 
         <input type="hidden" style="display: none;" id="id" name="id" value="<?php echo $employee["id"]; ?>" />
+
         <!-- first name and last name -->
         <section class="group">
             <div class="input_container">
@@ -82,7 +83,7 @@ try {
 
             <div class="input_container">
                 <label for="id_number"> Id Number </label>
-                <input name="id_number" id="id_number" type="text" required placeholder="enter country id card number" value="<?php echo $employee["id_number"] ?>" />
+                <input name="id_number" id="id_number" type="text" required placeholder="enter country id card number" maxlength="8" minlength="8" value="<?php echo $employee["id_number"] ?>" />
             </div>
         </section>
 
@@ -91,23 +92,23 @@ try {
             <div class="input_container">
                 <label for="department"> Department </label>
                 <select name="department" id="department">
-                    <option value="ceo">ceo</option>
-                    <option value="hr">hr</option>
-                    <option value="sales">sales</option>
-                    <option value="finance">finance</option>
-                    <option value="IT">it</option>
-                    <option value="marketing">marketing</option>
-                    <option value="legal">legal</option>
-                    <option value="outreach">outreach</option>
+                    <option value="ceo">CEO</option>
+                    <option value="hr">HR</option>
+                    <option value="sales">SALES</option>
+                    <option value="finance">FINANCE</option>
+                    <option value="IT">IT</option>
+                    <option value="marketing">MARKETING</option>
+                    <option value="legal">LEGAL</option>
+                    <option value="outreach">OUTREACH</option>
                 </select>
             </div>
 
             <div class="input_container">
                 <label for="job_title"> Position </label>
                 <select name="job_title" id="job_title">
-                    <option value="ceo">ceo</option>
-                    <option value="manager">manager</option>
-                    <option value="officer">officer</option>
+                    <option value="ceo">CEO</option>
+                    <option value="manager">MANAGER</option>
+                    <option value="officer">OFFICER</option>
                 </select>
             </div>
         </section>
@@ -151,8 +152,27 @@ try {
         <!-- contact_no -->
         <div class="input_container">
             <label for="contact_no">Contact number</label>
-            <input name="contact_no" id="contact_no" type="text" required placeholder="enter phone number" value="<?php echo $employee["contact_no"] ?>" />
+            <input name="contact_no" id="contact_no" type="text" required placeholder="enter phone number, format 7******" maxlength="9" minlength="9" value="<?php echo $employee["contact_no"] ?>" />
         </div>
+
+        <!-- script to set display custom error message on contact_no and id_number length violation -->
+        <script type="text/javascript" defer>
+            const contact_no_input = document.querySelector("#contact_no"),
+                id_number_input = document.querySelector("#id_number");
+
+            function setCustomLengthValidtyMsg(el, msg) {
+                el.addEventListener("input", () => {
+                    el.setCustomValidity("");
+                });
+
+                el.addEventListener("invalid", () => {
+                    el.setCustomValidity(msg);
+                });
+            }
+
+            setCustomLengthValidtyMsg(contact_no_input, "Number must have 9 characters.");
+            setCustomLengthValidtyMsg(id_number_input, "Id number contains 8 characters.");
+        </script>
 
         <!-- home_address -->
         <div class="input_container">
