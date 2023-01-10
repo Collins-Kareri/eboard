@@ -28,7 +28,7 @@ try {
 
         $hire_date = strtoupper(filter_input(INPUT_POST, "hire_date", FILTER_SANITIZE_FULL_SPECIAL_CHARS));
         $salary = 500000;
-
+ 
         switch ($job_title) {
             case ("MANAGER"):
                 $salary = 250000;
@@ -40,7 +40,7 @@ try {
                 return;
         }
 
-        $sql = "INSERT INTO employees (id, Employee_id, job_email_address, first_name, last_name, id_number, contact_no, home_address, DOB, Job_title, Department, Hire_date, Salary) VALUES ('$id', 18, '$email', '$first_name', '$last_name', $id_number, '$contact_no', '$home_address', '$DOB', '$job_title', '$department', '$hire_date', '$salary')";
+        $sql = "INSERT INTO employees (id, job_email_address, first_name, last_name, id_number, contact_no, home_address, DOB, Job_title, Department, Hire_date, Salary) VALUES ('$id', '$email', '$first_name', '$last_name', $id_number, '$contact_no', '$home_address', '$DOB', '$job_title', '$department', '$hire_date', '$salary')";
 
         //run the query in database
         if (mysqli_query($conn, $sql)) {
