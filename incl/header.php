@@ -1,7 +1,6 @@
-
 <?php
-    //import your database configurations
-    include "config/database.php" 
+//import your database configurations
+include "config/database.php"
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +10,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../../index.css" rel="stylesheet" />
+    <link href="../index.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/8c33923d38.js" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
