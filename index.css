@@ -171,9 +171,9 @@ button{
     padding: 12px;
     margin-bottom: 12px;
     font-weight: 400;
-    border: 1px solid var(--main-separator-color);
-    background-color: var(--main-separator-color);
-    box-shadow: 1px 2px 3px 1px var(--main-separator-color);
+    border: 1px solid #E8F0FE;
+    background-color:#E8F0FE;
+    box-shadow: 1px 2px 3px 1px #E8F0FE;
     color: var(--main-text-color);
     border-radius: 4px;
     outline: none;
