@@ -5,17 +5,6 @@ RED='\033[1;91m'
 GREEN='\033[1;92m'
 YELLOW='\033[1;93m'
 BLUE='\033[1;94m'
-AMAZON_LINUX_PATH=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
-PRIMARY_AZ=us-west-2a
-SECONDARY_AZ=us-west-2b
-
-# todo check if resource exists before creating
-
-# check if aws cli is installed
-if ! command -v aws &>/dev/null; then
-    echo -e "\n${RED}*** PLEASE INSTALL AWS CLI. ***${NC}\n"
-    exit
-fi
 
 notify() {
     case $1 in
@@ -34,38 +23,60 @@ notify() {
     esac
 }
 
-handleErrors() {
-    if [ $? -eq 0 ]; then
-        notify "success" $1
-    else
-        notify "error" $2
+checkDep() {
+    if ! command -v $1 &>/dev/null; then
+        notify "error" "PLEASE INSTALL $1"
+        exit
     fi
 }
 
-notify 'warning' 'This script use aws cli, please make sure it is configured'
+handleErrors() {
+    if [ $? -eq 0 ]; then
+        notify "success" "$1"
+    else
+        notify "error" "$2"
+        exit 0
+    fi
+}
+
+notify "info" "starting localstack"
+DEBUG=0 localstack start &>/dev/null &
+
+# check if aws and localstack cli is installed
+checkDep localstack
+checkDep aws
+
+# wait for localstack to start
+notify "info" "waiting for localstack to start"
+localstack wait
+
+# path to latest amazon linux ami image
+AMAZON_LINUX_PATH=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+notify 'warning' 'This script use aws cli, please make sure it is configured\n'
 
 read -p "Choose a name for your vpc: " vpc_name
+
 # read -p "Enter a cidr block: " cidr_block
 
 notify 'info' 'Creating vpc'
 
-vpc_id=$(aws ec2 create-vpc --region us-west-2 --cidr-block 10.0.0.0/26 --tag-specification "ResourceType=vpc,Tags=[{Key=Name,Value=$vpc_name}]" --query Vpc.VpcId --output text)
+vpc_id=$(aws ec2 create-vpc --cidr-block 10.0.0.0/26 --tag-specification "ResourceType=vpc,Tags=[{Key=Name,Value=$vpc_name}]" --query Vpc.VpcId --output text)
 
 # function to create subnets, it returns a subnet id
 createSubnet() {
-    echo $(aws ec2 create-subnet --vpc-id $vpc_id --availability-zone $1 --cidr-block $2 --tag-specifications "ResourceType=subnet,Tags=[{Key=Name,Value=$3}]" --query Subnet.SubnetId --output text)
+    echo $(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $1 --tag-specifications "ResourceType=subnet,Tags=[{Key=Name,Value=$2}]" --query Subnet.SubnetId --output text)
 }
 
 notify 'info' 'Creating subnets'
-# create public subnets
 
-public_subnet_1_id=$(createSubnet $PRIMARY_AZ 10.0.0.0/28 public_subnet1)
-public_subnet_2_id=$(createSubnet $SECONDARY_AZ 10.0.0.16/28 public_subnet2)
+# create public subnets
+public_subnet_1_id=$(createSubnet 10.0.0.0/28 public_subnet1)
+public_subnet_2_id=$(createSubnet 10.0.0.16/28 public_subnet2)
 
 # create private subnets
-
-private_subnet_1_id=$(createSubnet $PRIMARY_AZ 10.0.0.32/28 private_subnet1)
-private_subnet_2_id=$(createSubnet $SECONDARY_AZ 10.0.0.48/28 private_subnet2)
+private_subnet_1_id=$(createSubnet 10.0.0.32/28 private_subnet1)
+private_subnet_2_id=$(createSubnet 10.0.0.48/28 private_subnet2)
 
 notify 'info' 'Creating internet gateway'
 # create internet gateway
@@ -85,12 +96,12 @@ public_RT=$(create_route_table public_RT)
 
 notify 'info' 'Adding rule to allow internet access to vpc using internet gateway'
 __unused=$(aws ec2 create-route --route-table-id $public_RT --destination-cidr-block 0.0.0.0/0 --gateway-id $my_IGW 2>/dev/null)
-handleErrors "Rule added, public route table is now associated with internet gateway" "internet gateway not associated with public route table"
+handleErrors 'Rule added, public route table is now associated with internet gateway' 'internet gateway not associated with public route table'
 
 # function for associating subnet with a route table
 associateRouteTable() {
-    result=$(aws ec2 associate-route-table --subnet-id $1 --route-table-id $2 --query "AssociationState"."State" --output text)
-    notify "success" $result
+    result=$(aws ec2 associate-route-table --subnet-id $1 --route-table-id $2 2>/dev/null)
+    handleErrors "associated" "failed"
 }
 
 #function for modifying a subnet to assign public ips
@@ -130,7 +141,7 @@ notify 'info' 'Adding ssh rule to web server security group'
 
 __unused=$(aws ec2 authorize-security-group-ingress --group-id $web_server_sg_id --protocol tcp --port 22 --cidr 0.0.0.0/0)
 
-handleErrors "Added, ssh now allowed from any ip." "couldn't add the inbound rule."
+handleErrors 'Added, you can now ssh' 'could not add the inbound rule.'
 
 # create a key pair for ssh
 askForKeyName() {
@@ -146,27 +157,24 @@ check_keypair() {
         notify "warning" "Keypair found"
         key_status=$(doOrNot 'Use this as your key pair name')
         if [[ $key_status == 'N' || $key_status == 'n' ]]; then
-            create_keypair "y"
+            notify "info" "Enter a new keypair name below"
+            create_keypair
         fi
     else
         notify "info" "Keypair not found"
-        key_status=$(doOrNot 'Would you like to create a new one')
-        create_keypair $key_status $1
+        notify "info" "Proceeding to create keypair"
+        create_keypair $1
     fi
 }
 
 create_keypair() {
-    if [[ $1 == 'Y' || $1 == 'y' ]]; then
-        local key_name=$2
-
-        while [ -z $key_name ]; do
-            local key_name=$(askForKeyName)
-        done
-
-        notify "info" "Creating keypair"
-        aws ec2 create-key-pair --key-name $key_name --query 'KeyMaterial' --output text >$key_name.pem
-        notify "success" "Done. Check current folder for $key_name.pem"
-    fi
+    local key_name=$1
+    while [ -z $key_name ]; do
+        local key_name=$(askForKeyName)
+    done
+    notify "info" "Creating keypair"
+    aws ec2 create-key-pair --key-name $key_name --query 'KeyMaterial' --output text >$key_name.pem
+    notify "success" "\nDone. Check current folder for ./$key_name.pem\n"
 }
 
 doOrNot() {
@@ -182,12 +190,9 @@ read -p "Please enter prefered instance name: " instance_name
 
 notify "info" "Creating instance"
 
-web_server_id=$(aws ec2 run-instances --image-id resolve:ssm:$AMAZON_LINUX_PATH --count 1 --instance-type t3.nano --associate-public-ip-address --key-name $key_name --security-group-ids $web_server_sg_id --subnet-id $public_subnet_1_id --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name}]" --query Instances[0].InstanceId --output text)
+web_server_id=$(aws ec2 run-instances --image-id resolve:ssm:$AMAZON_LINUX_PATH --count 1 --instance-type t3.nano --associate-public-ip-address --key-name $key_name --security-group-ids $web_server_sg_id --subnet-id $public_subnet_1_id --tag-specification "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name}]" --query Instances[0].InstanceId --output text 2>/dev/null)
 
-if [ -z $web_server_id ]; then
-    notify "error" "Couldn't create instance"
-    exit 0
-fi
+handleErrors "created" "Couldn't create instance"
 
 notify "info" "Starting instance"
 aws ec2 wait instance-running --instance-ids $web_server_id
@@ -196,3 +201,12 @@ notify "info" "Checking instance status"
 aws ec2 wait instance-status-ok --instance-ids $web_server_id
 notify "success" "Instance status is ok"
 notify "success" "Done."
+
+read -p "Would you like to stop localstack(Y|N)? " stopLocalStack
+
+if [[ $stopLocalStack == 'y' || $stopLocalStack == 'Y' ]]; then
+    notify "info" "stopping localstack"
+    localstack stop
+fi
+
+echo "{public_subnet_1_id: $public_subnet_1_id, public_subnet_2_id: $public_subnet_2_id, private_subnet_1_id: $private_subnet_1_id, private_subnet_2_id: $private_subnet_2_id, vpc_id: $vpc_id, web_server_sg_id: $sg_id, web_server_id: $web_server_id, public_rt:$public_RT}" >vpc_values.txt
