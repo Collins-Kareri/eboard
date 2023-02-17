@@ -15,7 +15,7 @@ notify() {
         echo -e "${BLUE}$2....${NC}" >&2
         ;;
     warning)
-        echo -e "\n${YELLOW} $2 ${NC}" >&2
+        echo -e "${YELLOW} $2 ${NC}" >&2
         ;;
     success)
         echo -e "\t${GREEN} $2 ${NC}" >&2
@@ -39,10 +39,16 @@ handleErrors() {
     fi
 }
 
+readInput() {
+    read -p "$(echo -e '\n\b') $1" result
+    echo "$result"
+}
+
 notify "info" "starting localstack"
 DEBUG=0 localstack start &>/dev/null &
 
 # check if awslocal and localstack cli is installed
+checkDep docker
 checkDep localstack
 checkDep awslocal
 
@@ -53,9 +59,9 @@ localstack wait
 # path to latest amazon linux ami image
 AMAZON_LINUX_PATH=/awslocal/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
-notify 'warning' 'This script use awslocal cli, please make sure it is configured\n'
+notify 'warning' '\nThis script use awslocal cli, please make sure it is configured'
 
-read -p "Choose a name for your vpc: " vpc_name
+vpc_name=$(readInput "Choose a name for your vpc: ")
 
 # read -p "Enter a cidr block: " cidr_block
 
@@ -131,21 +137,20 @@ associateRouteTable $private_subnet_2_id $private_RT
 notify 'success' 'Done with vpc elements'
 
 # create a security group for ec2-instance and store it's id
-read -p "Choose a name for your ec2 security group: " group_name
+
+security_group_name=$(readInput "Choose a name for your ec2 security group: ")
 
 notify 'info' 'Creating security group'
 
-web_server_sg_id=$(awslocal ec2 create-security-group --group-name $group_name --description "webserver SG" --vpc-id $vpc_id --tag-specification "ResourceType=security-group,Tags=[{Key=Name,Value=$group_name}]" --query "GroupId" --output text)
+web_server_sg_id=$(awslocal ec2 create-security-group --group-name $security_group_name --description "webserver SG" --vpc-id $vpc_id --tag-specification "ResourceType=security-group,Tags=[{Key=Name,Value=$security_group_name}]" --query "GroupId" --output text)
 
 notify 'info' 'Adding ssh rule to web server security group'
-
 __unused=$(awslocal ec2 authorize-security-group-ingress --group-id $web_server_sg_id --protocol tcp --port 22 --cidr 0.0.0.0/0)
-
 handleErrors 'Added, you can now ssh' 'could not add the inbound rule.'
 
 # create a key pair for ssh
 askForKeyName() {
-    read -p "Enter a preferred key pair name (this is used to facilitate ssh connections): " res
+    res=$(readInput "Enter a preferred key pair name (this is used to facilitate ssh connections): ")
     echo $res
 }
 
@@ -155,11 +160,13 @@ check_keypair() {
 
     if [ $? -eq 0 ]; then
         notify "warning" "Keypair found"
-        key_status=$(doOrNot 'Use this as your key pair name')
+        key_status=$(doOrNot 'Use this keypair')
+
         if [[ $key_status == 'N' || $key_status == 'n' ]]; then
             notify "info" "Enter a new keypair name below"
             create_keypair
         fi
+
     else
         notify "info" "Keypair not found"
         notify "info" "Proceeding to create keypair"
@@ -174,11 +181,11 @@ create_keypair() {
     done
     notify "info" "Creating keypair"
     awslocal ec2 create-key-pair --key-name $key_name --query 'KeyMaterial' --output text >$key_name.pem
-    notify "success" "\nDone. Check current folder for ./$key_name.pem\n"
+    notify "success" "\nDone. Check current folder for ./$key_name.pem"
 }
 
 doOrNot() {
-    read -p "$1? (Y/N)" res
+    res=$(readInput "$1? (Y/n)")
     echo $res
 }
 
@@ -186,7 +193,8 @@ key_name=$(askForKeyName)
 key_status=$(check_keypair $key_name)
 
 # create webserver logic
-read -p "Please enter prefered instance name: " instance_name
+
+instance_name=$(readInput "Please enter prefered instance name: ")
 
 notify "info" "Creating instance"
 
@@ -194,7 +202,7 @@ web_server_id=$(awslocal ec2 run-instances --image-id resolve:ssm:$AMAZON_LINUX_
 
 handleErrors "created" "Couldn't create instance"
 
-notify "info" "Starting instance"
+notify "info" "Creating instance"
 awslocal ec2 wait instance-running --instance-ids $web_server_id
 
 notify "info" "Checking instance status"
@@ -202,11 +210,11 @@ awslocal ec2 wait instance-status-ok --instance-ids $web_server_id
 notify "success" "Instance status is ok"
 notify "success" "Done."
 
-read -p "Would you like to stop localstack(Y|N)? " stopLocalStack
-
+stopLocalStack=$(readInput "Would you like to stop localstack(Y|n)? ")
+echo $stopLocalStack
 if [[ $stopLocalStack == 'y' || $stopLocalStack == 'Y' ]]; then
     notify "info" "stopping localstack"
     localstack stop
 fi
 
-echo "{public_subnet_1_id: $public_subnet_1_id, public_subnet_2_id: $public_subnet_2_id, private_subnet_1_id: $private_subnet_1_id, private_subnet_2_id: $private_subnet_2_id, vpc_id: $vpc_id, web_server_sg_id: $sg_id, web_server_id: $web_server_id, public_rt:$public_RT}" >vpc_values.txt
+echo "{'public_subnet_1_id': '$public_subnet_1_id', 'public_subnet_2_id': '$public_subnet_2_id', 'private_subnet_1_id': '$private_subnet_1_id', 'private_subnet_2_id': '$private_subnet_2_id', 'vpc_id': '$vpc_id', 'web_server_sg_id': $'sg_id', 'web_server_id': '$web_server_id', 'public_rt':'$public_RT'}" >vpc_values.txt
