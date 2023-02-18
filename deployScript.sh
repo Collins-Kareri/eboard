@@ -40,7 +40,7 @@ handleErrors() {
 }
 
 readInput() {
-    read -p "$(echo -e '\n\b') $1" result
+    read -p "$(echo -e '\b') $1" result
     echo "$result"
 }
 
@@ -59,7 +59,7 @@ localstack wait
 # path to latest amazon linux ami image
 AMAZON_LINUX_PATH=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
-notify 'warning' '\nThis script use aws cli, please make sure it is configured'
+notify 'warning' '\nThis script use aws cli, please make sure it is configured\b'
 
 vpc_name=$(readInput "Choose a name for your vpc: ")
 
@@ -110,7 +110,7 @@ associateRouteTable() {
     handleErrors "associated" "failed"
 }
 
-#function for modifying a subnet to assign public ips
+# function for modifying a subnet to assign public ips
 modifySubnet() {
     aws ec2 modify-subnet-attribute --subnet-id $1 --map-public-ip-on-launch
 }
@@ -148,6 +148,10 @@ notify 'info' 'Adding ssh rule to web server security group'
 __unused=$(aws ec2 authorize-security-group-ingress --group-id $web_server_sg_id --protocol tcp --port 22 --cidr 0.0.0.0/0)
 handleErrors 'Added, you can now ssh' 'could not add the inbound rule.'
 
+notify 'info' 'Adding http rule to web server security group'
+__unused=$(aws ec2 authorize-security-group-ingress --group-id $web_server_sg_id --protocol tcp --port 80 --cidr 0.0.0.0/0)
+handleErrors 'Added, you can now connect to server through internet' 'could not add the inbound rule'
+
 # create a key pair for ssh
 askForKeyName() {
     res=$(readInput "Enter a preferred key pair name (this is used to facilitate ssh connections): ")
@@ -181,7 +185,7 @@ create_keypair() {
     done
     notify "info" "Creating keypair"
     aws ec2 create-key-pair --key-name $key_name --query 'KeyMaterial' --output text >$key_name.pem
-    notify "success" "\nDone. Check current folder for ./$key_name.pem"
+    notify "success" "Done. Check current folder for ./$key_name.pem"
 }
 
 doOrNot() {
@@ -208,13 +212,41 @@ aws ec2 wait instance-running --instance-ids $web_server_id
 notify "info" "Checking instance status"
 aws ec2 wait instance-status-ok --instance-ids $web_server_id
 notify "success" "Instance status is ok"
-notify "success" "Done."
+
+db_security_group_name=$(readInput "Choose a name for your database security group: ")
+
+notify 'info' 'Creating db security group'
+
+db_sg_id=$(aws ec2 create-security-group --group-name $db_security_group_name --description "database SG" --vpc-id $vpc_id --tag-specification "ResourceType=security-group,Tags=[{Key=Name,Value=$db_security_group_name}]" --query "GroupId" --output text)
+
+notify 'info' 'Adding database access rule to db security group'
+__unused=$(aws ec2 authorize-security-group-ingress --group-id "$db_sg_id" --protocol tcp --port 3306 --source-group "$web_server_sg_id")
+handleErrors 'Added, you can now connect to db' 'could not add the inbound rule.'
+
+db_subnet_group_name=$(readInput "Choose a subnet group name: ")
+__unused=$(aws rds create-db-subnet-group --db-subnet-group-name "$db_subnet_group_name" --db-subnet-group-description "subnet group for main database" --subnet-ids '["$private_subnet_1_id", "$private_subnet_2_id"]' --query "DBSubnetGroup"."SubnetGroupStatus" --output text)
+notify "success" "$__unused"
+
+db_instance_name=$(readInput "Enter desired db instance name: ")
+db_name=$(readInput "Enter the name of the database: ")
+db_username=$(readInput "Choose a db master username: ")
+db_password=$(readInput "Choose a db master password: ")
+
+notify "info" "Defaulting to mysql as database engine"
+db_arn=$(aws rds create-db-instance --db-name "$db_name" --db-instance-identifier "$db_instance_name" --db-instance-class db.t3.nano --engine mysql --master-username "$db_username" --master-user-password "$db_password" --allocated-storage 20 --db-subnet-group-name "$db_subnet_group_name" --vpc-security-group-ids "$db_sg_id" --no-multi-az --no-publicly-accessible --query "DBInstance"."DBInstanceArn" --output text)
+
+notify "info" "Database instance starting...."
+aws rds wait db-instance-available --db-instance-identifier $db_arn
+
+db_status=$(aws rds describe-db-instances --db-instance-identifier $db_arn --query "DBInstances"."DBInstanceStatus" --output text)
+
+notify "success" "db is $db_status"
 
 stopLocalStack=$(readInput "Would you like to stop localstack(Y|n)? ")
-echo $stopLocalStack
+
 if [[ $stopLocalStack == 'y' || $stopLocalStack == 'Y' ]]; then
     notify "info" "stopping localstack"
     localstack stop
 fi
 
-echo "{'public_subnet_1_id': '$public_subnet_1_id', 'public_subnet_2_id': '$public_subnet_2_id', 'private_subnet_1_id': '$private_subnet_1_id', 'private_subnet_2_id': '$private_subnet_2_id', 'vpc_id': '$vpc_id', 'web_server_sg_id': $'sg_id', 'web_server_id': '$web_server_id', 'public_rt':'$public_RT'}" >vpc_values.txt
+echo "{\"public_subnet_1_id\": \"$public_subnet_1_id\", \"public_subnet_2_id\": \"$public_subnet_2_id\", \"private_subnet_1_id\": \"$private_subnet_1_id\", \"private_subnet_2_id\": \"$private_subnet_2_id\", \"vpc_id\": \"$vpc_id\", \"web_server_sg_id\": \"$web_server_sg_id\", \"web_server_id\": \"$web_server_id\", \"public_rt\":\"$public_RT\", \"db_arn\":\"$db_arn\"}" >vpc_values.json
