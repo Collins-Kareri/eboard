@@ -15,7 +15,7 @@ notify() {
         echo -e "${BLUE}$2....${NC}" >&2
         ;;
     warning)
-        echo -e "\n${YELLOW} $2 ${NC}" >&2
+        echo -e "${YELLOW} $2 ${NC}" >&2
         ;;
     success)
         echo -e "\t${GREEN} $2 ${NC}" >&2
@@ -39,10 +39,16 @@ handleErrors() {
     fi
 }
 
+readInput() {
+    read -p "$(echo -e '\b') $1" result
+    echo "$result"
+}
+
 notify "info" "starting localstack"
 DEBUG=0 localstack start &>/dev/null &
 
 # check if awslocal and localstack cli is installed
+checkDep docker
 checkDep localstack
 checkDep awslocal
 
@@ -53,9 +59,19 @@ localstack wait
 # path to latest amazon linux ami image
 AMAZON_LINUX_PATH=/awslocal/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
-notify 'warning' 'This script use awslocal cli, please make sure it is configured\n'
+notify 'warning' '\nThis script use awslocal cli, please make sure it is configured\b'
 
-read -p "Choose a name for your vpc: " vpc_name
+notify "info" "Preparing script"
+default_region=$(awslocal ec2 describe-availability-zones --query 'AvailabilityZones[0].[RegionName]' --output text)
+
+# get availability
+primary_az=$(awslocal ec2 describe-availability-zones --region $default_region --query "AvailabilityZones"[0]."ZoneName" --output text)
+
+secondary_az=$(awslocal ec2 describe-availability-zones --region $default_region --query "AvailabilityZones"[1]."ZoneName" --output text)
+
+notify "info" "Starting"
+
+vpc_name=$(readInput "Choose a name for your vpc: ")
 
 # read -p "Enter a cidr block: " cidr_block
 
@@ -65,18 +81,18 @@ vpc_id=$(awslocal ec2 create-vpc --cidr-block 10.0.0.0/26 --tag-specification "R
 
 # function to create subnets, it returns a subnet id
 createSubnet() {
-    echo $(awslocal ec2 create-subnet --vpc-id $vpc_id --cidr-block $1 --tag-specifications "ResourceType=subnet,Tags=[{Key=Name,Value=$2}]" --query Subnet.SubnetId --output text)
+	echo $(awslocal ec2 create-subnet --vpc-id $vpc_id --cidr-block $1 --availability-zone $2 --tag-specifications "ResourceType=subnet,Tags=[{Key=Name,Value=$3}]" --query Subnet.SubnetId --output text)
 }
 
 notify 'info' 'Creating subnets'
 
 # create public subnets
-public_subnet_1_id=$(createSubnet 10.0.0.0/28 public_subnet1)
-public_subnet_2_id=$(createSubnet 10.0.0.16/28 public_subnet2)
+public_subnet_1_id=$(createSubnet 10.0.0.0/28 "$primary_az" public_subnet1)
+public_subnet_2_id=$(createSubnet 10.0.0.16/28 "$primary_az" public_subnet1)
 
 # create private subnets
-private_subnet_1_id=$(createSubnet 10.0.0.32/28 private_subnet1)
-private_subnet_2_id=$(createSubnet 10.0.0.48/28 private_subnet2)
+private_subnet_1_id=$(createSubnet 10.0.0.32/28 "$primary_az" private_subnet1)
+private_subnet_2_id=$(createSubnet 10.0.0.48/28 "$secondary_az" private_subnet2)
 
 notify 'info' 'Creating internet gateway'
 # create internet gateway
@@ -88,7 +104,7 @@ notify 'success' 'Attached'
 
 # function to create route tables, returns route table id
 create_route_table() {
-    echo $(awslocal ec2 create-route-table --vpc-id $vpc_id --tag-specification "ResourceType=route-table,Tags=[{Key=Name,Value=$1}]" --query RouteTable.RouteTableId --output text)
+	echo $(awslocal ec2 create-route-table --vpc-id $vpc_id --tag-specification "ResourceType=route-table,Tags=[{Key=Name,Value=$1}]" --query RouteTable.RouteTableId --output text)
 }
 
 # variable to hold public route table id
@@ -99,14 +115,15 @@ __unused=$(awslocal ec2 create-route --route-table-id $public_RT --destination-c
 handleErrors 'Rule added, public route table is now associated with internet gateway' 'internet gateway not associated with public route table'
 
 # function for associating subnet with a route table
+
 associateRouteTable() {
-    result=$(awslocal ec2 associate-route-table --subnet-id $1 --route-table-id $2 2>/dev/null)
-    handleErrors "associated" "failed"
+	result=$(awslocal ec2 associate-route-table --subnet-id $1 --route-table-id $2 2>/dev/null)
+	handleErrors "associated" "failed"
 }
 
-#function for modifying a subnet to assign public ips
+# function for modifying a subnet to assign public ips
 modifySubnet() {
-    awslocal ec2 modify-subnet-attribute --subnet-id $1 --map-public-ip-on-launch
+	awslocal ec2 modify-subnet-attribute --subnet-id $1 --map-public-ip-on-launch
 }
 
 notify 'info' 'Associating public subnets with public route table'
@@ -131,62 +148,68 @@ associateRouteTable $private_subnet_2_id $private_RT
 notify 'success' 'Done with vpc elements'
 
 # create a security group for ec2-instance and store it's id
-read -p "Choose a name for your ec2 security group: " group_name
+
+security_group_name=$(readInput "Choose a name for your ec2 security group: ")
 
 notify 'info' 'Creating security group'
 
-web_server_sg_id=$(awslocal ec2 create-security-group --group-name $group_name --description "webserver SG" --vpc-id $vpc_id --tag-specification "ResourceType=security-group,Tags=[{Key=Name,Value=$group_name}]" --query "GroupId" --output text)
+web_server_sg_id=$(awslocal ec2 create-security-group --group-name $security_group_name --description "webserver SG" --vpc-id $vpc_id --tag-specification "ResourceType=security-group,Tags=[{Key=Name,Value=$security_group_name}]" --query "GroupId" --output text)
 
 notify 'info' 'Adding ssh rule to web server security group'
-
 __unused=$(awslocal ec2 authorize-security-group-ingress --group-id $web_server_sg_id --protocol tcp --port 22 --cidr 0.0.0.0/0)
-
 handleErrors 'Added, you can now ssh' 'could not add the inbound rule.'
+
+notify 'info' 'Adding http rule to web server security group'
+__unused=$(awslocal ec2 authorize-security-group-ingress --group-id $web_server_sg_id --protocol tcp --port 80 --cidr 0.0.0.0/0)
+handleErrors 'Added, you can now connect to server through internet' 'could not add the inbound rule'
 
 # create a key pair for ssh
 askForKeyName() {
-    read -p "Enter a preferred key pair name (this is used to facilitate ssh connections): " res
-    echo $res
+	res=$(readInput "Enter a preferred key pair name (this is used to facilitate ssh connections): ")
+	echo $res
 }
 
 check_keypair() {
-    notify "info" "Checking if keypair already exists"
-    awslocal ec2 describe-key-pairs --key-name $1 --query "KeyPairs"[0]."KeyName" --output text 2>/dev/null
+	notify "info" "Checking if keypair already exists"
+	awslocal ec2 describe-key-pairs --key-name $1 --query "KeyPairs"[0]."KeyName" --output text 2>/dev/null
 
-    if [ $? -eq 0 ]; then
-        notify "warning" "Keypair found"
-        key_status=$(doOrNot 'Use this as your key pair name')
-        if [[ $key_status == 'N' || $key_status == 'n' ]]; then
-            notify "info" "Enter a new keypair name below"
-            create_keypair
-        fi
-    else
-        notify "info" "Keypair not found"
-        notify "info" "Proceeding to create keypair"
-        create_keypair $1
-    fi
+	if [ $? -eq 0 ]; then
+		notify "warning" "Keypair found"
+		key_status=$(doOrNot 'Use this keypair')
+
+		if [[ $key_status == 'N' || $key_status == 'n' ]]; then
+			notify "info" "Enter a new keypair name below"
+			create_keypair
+		fi
+
+	else
+		notify "info" "Keypair not found"
+		notify "info" "Proceeding to create keypair"
+		create_keypair $1
+	fi
 }
 
 create_keypair() {
-    local key_name=$1
-    while [ -z $key_name ]; do
-        local key_name=$(askForKeyName)
-    done
-    notify "info" "Creating keypair"
-    awslocal ec2 create-key-pair --key-name $key_name --query 'KeyMaterial' --output text >$key_name.pem
-    notify "success" "\nDone. Check current folder for ./$key_name.pem\n"
+	local key_name=$1
+	while [ -z $key_name ]; do
+		local key_name=$(askForKeyName)
+	done
+	notify "info" "Creating keypair"
+	awslocal ec2 create-key-pair --key-name $key_name --query 'KeyMaterial' --output text >$key_name.pem
+	notify "success" "Done. Check current folder for ./$key_name.pem"
 }
 
 doOrNot() {
-    read -p "$1? (Y/N)" res
-    echo $res
+	res=$(readInput "$1? (Y/n)")
+	echo $res
 }
 
 key_name=$(askForKeyName)
 key_status=$(check_keypair $key_name)
 
 # create webserver logic
-read -p "Please enter prefered instance name: " instance_name
+
+instance_name=$(readInput "Please enter prefered web server instance name: ")
 
 notify "info" "Creating instance"
 
@@ -197,16 +220,54 @@ handleErrors "created" "Couldn't create instance"
 notify "info" "Starting instance"
 awslocal ec2 wait instance-running --instance-ids $web_server_id
 
-notify "info" "Checking instance status"
+notify "info" "Waiting for instance to start"
 awslocal ec2 wait instance-status-ok --instance-ids $web_server_id
 notify "success" "Instance status is ok"
-notify "success" "Done."
 
-read -p "Would you like to stop localstack(Y|N)? " stopLocalStack
+db_security_group_name=$(readInput "Choose a name for your database security group: ")
+
+notify 'info' 'Creating db security group'
+
+db_sg_id=$(awslocal ec2 create-security-group --group-name $db_security_group_name --description "database SG" --vpc-id $vpc_id --tag-specification "ResourceType=security-group,Tags=[{Key=Name,Value=$db_security_group_name}]" --query "GroupId" --output text)
+
+notify 'info' 'Adding database access rule to db security group'
+__unused=$(awslocal ec2 authorize-security-group-ingress --group-id "$db_sg_id" --protocol tcp --port 3306 --source-group "$web_server_sg_id" 2>/dev/null)
+handleErrors 'Added, you can now connect to db' 'could not add the inbound rule.'
+
+db_subnet_group_name=$(readInput "Choose a subnet group name: ")
+notify "info" "creating subnet group...."
+__unused=$(awslocal rds create-db-subnet-group --db-subnet-group-name "$db_subnet_group_name" --db-subnet-group-description "subnet group for main database" --subnet-ids "$private_subnet_1_id" "$private_subnet_2_id" --query "DBSubnetGroup"."DBSubnetGroupName" --output text)
+notify "success" "created"
+
+db_instance_name=$(readInput "Enter desired db instance name: ")
+db_name=$(readInput "Enter the name of the database: ")
+db_username=$(readInput "Choose a db master username: ")
+db_password=$(readInput "Choose a db master password: ")
+
+notify "info" "Defaulting to mysql as database engine"
+notify "info" "Creating database instance...."
+db_arn=$(awslocal rds create-db-instance --db-name "$db_name" --db-instance-identifier "$db_instance_name" --db-instance-class db.t3.micro --engine mysql --master-username "$db_username" --master-user-password "$db_password" --allocated-storage 20 --db-subnet-group-name "$db_subnet_group_name" --vpc-security-group-ids "$db_sg_id" --no-multi-az --no-publicly-accessible --query "DBInstance"."DBInstanceArn" --output text)
+handleErrors 'Created db instance' 'could not create database instance'
+
+notify "info" "Database instance starting...."
+awslocal rds wait db-instance-available --db-instance-identifier "$db_arn"
+notify "success" "started"
+
+notify "info" "Retrieving database instance host endpoint"
+
+# get the db instance host endpoint
+
+db_host=$(awslocal rds describe-db-instances --db-instance-identifier ${db_arn} --query 'DBInstances[0].Endpoint.Address' --output text)
+
+# setup the webserver
+
+web_server_Ip=$(awslocal ec2 describe-instances --instance-ids $web_server_id --query "Reservations"[0]."Instances"[0]."PublicIpAddress" --output text)
+
+stopLocalStack=$(readInput "Would you like to stop localstack(Y|n)? ")
 
 if [[ $stopLocalStack == 'y' || $stopLocalStack == 'Y' ]]; then
     notify "info" "stopping localstack"
     localstack stop
 fi
 
-echo "{public_subnet_1_id: $public_subnet_1_id, public_subnet_2_id: $public_subnet_2_id, private_subnet_1_id: $private_subnet_1_id, private_subnet_2_id: $private_subnet_2_id, vpc_id: $vpc_id, web_server_sg_id: $sg_id, web_server_id: $web_server_id, public_rt:$public_RT}" >vpc_values.txt
+echo "{\"public_subnet_1_id\": \"$public_subnet_1_id\", \"private_subnet_1_id\": \"$private_subnet_1_id\", \"private_subnet_2_id\": \"$private_subnet_2_id\", \"vpc_id\": \"$vpc_id\", \"web_server_sg_id\": \"$web_server_sg_id\", \"web_server_id\": \"$web_server_id\", \"public_rt\":\"$public_RT\", \"db_host\":\"$db_host\",\"ip\":\"$web_server_Ip\"}" >vpc_values.json
