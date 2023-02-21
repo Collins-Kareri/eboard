@@ -41,7 +41,7 @@ mv employees_capstone_project/* .
 rm -rfv employees_capstone_project
 
 # setup the database
-mysql -host="$host" --user="$user" --password="$password" -P 3306 < ProjectDB.sql
+mysql --host="$host" --user="$user" --password="$password" -P 3306 < ProjectDB.sql
 
 # function which takes value to replace in the database config file and value to replace with.
 file_path='config/database.php'

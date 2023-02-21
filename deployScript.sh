@@ -261,6 +261,7 @@ editFile() {
     sed -i "s/$1/$2/g" $file_path
 }
 
+# add database values to server setup script
 editFile "host=''" "host='${db_host}'"
 editFile "user=''" "user='${db_username}'"
 editFile "password=''" "password='${db_password}'"
@@ -268,10 +269,17 @@ editFile "db_name=''" "db_name='${db_name}'"
 
 chmod 400 -v "./$key_name.pem"
 
+# setup webserver
 ssh -i "./$key_name.pem" ec2-user@$web_server_Ip 'bash -s'<serverSetup.sh
 
 # returning the pem file to read and write
 chmod 600 -v "./$key_name.pem"
+
+# return database values to defaults
+editFile "host='${db_host}'" "host=''"
+editFile "user='${db_username}'" "user=''"
+editFile "password='${db_password}'" "password=''"
+editFile "db_name='${db_name}'" "db_name=''"
 
 echo "success" "visit http://${web_server_Ip} to see your website"
 
