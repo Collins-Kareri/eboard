@@ -1,2 +1,5 @@
 vpc_values.json
 *.pem
+.vscode
+
+/vendor/

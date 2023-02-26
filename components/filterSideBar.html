@@ -1,0 +1,39 @@
+<!--Filter container and sidebar-->
+<div
+	class="absolute w-full h-screen top-0 right-0 z-50 bg-slate-500/70 flex justify-end text-slate-700">
+	<!--Filter sidebar-->
+	<section class="relative bg-slate-900 p-6 min-w-[300px] h-full">
+		<!--Filter container-->
+		<!--Department filters-->
+		<div class="flex flex-col items-start py-4 capitalize">
+			<h2 class="font-medium">departments</h2>
+			<section class="px-2 py-4">
+				<div class="flex items-center gap-2 mb-2 text-sm font-light">
+					<input
+						type="checkbox"
+						name="task_toggle"
+						id="task_toggle"
+						class="cursor-pointer rounded p-2 bg-slate-200 border-slate-200" />
+					<label for="task_toggle">department name</label>
+				</div>
+			</section>
+		</div>
+
+		<!--Filter container-->
+		<!--Postition filters-->
+		<div
+			class="flex flex-col items-start py-4 capitalize border-t border-slate-200">
+			<h2 class="font-medium">positions</h2>
+			<section class="px-2 py-4">
+				<div class="flex items-center gap-2 mb-2 text-sm font-light">
+					<input
+						type="checkbox"
+						name="task_toggle"
+						id="task_toggle"
+						class="cursor-pointer rounded p-2 bg-slate-200 border-slate-200" />
+					<label for="task_toggle">position name</label>
+				</div>
+			</section>
+		</div>
+	</section>
+</div>

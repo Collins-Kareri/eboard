@@ -1,0 +1,12 @@
+{
+    "name": "loco/employees_capstone_project",
+    "authors": [
+        {
+            "name": "Collins-Kareri",
+            "email": "locoreri@gmail.com"
+        }
+    ],
+    "require": {
+        "nesbot/carbon": "^2.66"
+    }
+}

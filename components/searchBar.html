@@ -1,0 +1,33 @@
+<!--Search bar container-->
+<section class="flex w-full justify-center">
+	<!--search bar-->
+	<div
+		class="flex items-center border-slate-900 w-[465px] border rounded bg-slate-900 gap-2">
+		<!--search icon-->
+		<i class="fa-solid fa-magnifying-glass fa-lg ml-4"></i>
+		<input
+			type="text"
+			placeholder="Search..."
+			id="search"
+			name="search"
+			autocomplete="off"
+			class="bg-transparent outline-none border-none py-4" />
+		<!--clear search bar icon-->
+		<i class="fa-solid fa-circle-xmark cursor-pointer"></i>
+		<!--select where to search for the term-->
+		<div
+			class="relative cursor-pointer w-fit px-4 py-2 border-slate-200 capitalize flex items-center gap-4 border-l-[3px] rounded border-slate-900 ml-2">
+			Name
+			<i class="fa-solid fa-angle-down"></i>
+			<!--Options for search-->
+			<!-- <section
+							class="absolute bg-slate-800 w-full rounded py-4 top-14 left-0 text-left z-10 border border-slate-800 px-2 flex flex-col gap-2 text-sm">
+							<p
+								class="hover:bg-slate-900 px-4 py-2 font-medium bg-slate-900 rounded">
+								Name
+							</p>
+							<p class="px-4 py-2 hover:bg-slate-900 rounded">Email</p>
+						</section> -->
+		</div>
+	</div>
+</section>
