@@ -7,6 +7,9 @@ include "./vendor/autoload.php";
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
+/**
+ * Contains methods used to build calender
+ */
 class Calender
 {
     /**
