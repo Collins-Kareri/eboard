@@ -48,15 +48,15 @@
                 <p>home</p>
             </a>
             <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
-                <i class="fa-solid fa-people-"></i>
+                <i class="fa-solid fa-people-group"></i>
                 <p>employees</p>
             </a>
 
-            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md bg-slate-600 text-slate-700">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
                 <i class="fa-solid fa-calendar-check"></i>
                 <p>tasks</p>
             </a>
-            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md bg-slate-600 text-slate-700">
                 <i class="fa-solid fa-gear"></i>
                 <p>account settings</p>
             </a>
