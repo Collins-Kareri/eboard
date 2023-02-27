@@ -33,7 +33,7 @@
                 <p class="text-sm font-extralight">position</p>
             </div>
 
-            <a href="#" class="group text-sm flex w-fit shrink-0 items-center px-4 py-3 bg-slate-800 ring-2 ring-slate-800 rounded gap-2 capitalize">
+            <a href="#" class=" text-sm flex w-fit shrink-0 items-center px-4 py-3 bg-slate-800 ring-2 ring-slate-800 rounded gap-2 capitalize">
                 <p>log out</p>
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </a>
@@ -43,20 +43,20 @@
         <!--active bg-slate-600 text-slate-700 -->
         <!--inactive bg-slate-600 text-slate-700 -->
         <section class="flex flex-col w-full justify-between items-start text-slate-600 border-t border-slate-200 py-4 border-opacity-30 gap-4 capitalize mb-2">
-            <a href="#" class="group flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 hover:bg-slate-600 rounded-md p-2">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 hover:bg-slate-600 rounded-md p-2">
                 <i class="fa-solid fa-house-user"></i>
                 <p>home</p>
             </a>
-            <a href="#" class="group flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
-                <i class="fa-solid fa-people-group"></i>
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
+                <i class="fa-solid fa-people-"></i>
                 <p>employees</p>
             </a>
 
-            <a href="#" class="group flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md bg-slate-600 text-slate-700">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md bg-slate-600 text-slate-700">
                 <i class="fa-solid fa-calendar-check"></i>
                 <p>tasks</p>
             </a>
-            <a href="#" class="group flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
                 <i class="fa-solid fa-gear"></i>
                 <p>account settings</p>
             </a>
@@ -64,11 +64,11 @@
 
         <!--invite employee or add admin-->
         <section class="flex flex-col w-full justify-between items-start text-slate-600 border-t border-slate-200 py-4 border-opacity-30 gap-4 capitalize mb-2">
-            <a href="#" class="group flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
                 <i class="fa-solid fa-paper-plane"></i>
                 <p>invite employee</p>
             </a>
-            <a href="#" class="group flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
+            <a href="#" class=" flex w-fit shrink-0 items-center w-full hover:text-slate-700 gap-2 p-2 hover:bg-slate-600 rounded-md">
                 <i class="fa-solid fa-person-circle-plus"></i>
                 <p>add admin</p>
             </a>
