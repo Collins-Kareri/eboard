@@ -6,7 +6,7 @@ GREEN='\033[1;92m'
 YELLOW='\033[1;93m'
 BLUE='\033[1;94m'
 
-notify() {
+function notify() {
 	case $1 in
 	error)
 		echo -e "\n${RED}*** Falied: $2 ***${NC}\n" >&2
@@ -23,14 +23,14 @@ notify() {
 	esac
 }
 
-checkDep() {
+function checkDep() {
 	if ! command -v $1 &>/dev/null; then
 		notify "error" "PLEASE INSTALL $1"
 		exit
 	fi
 }
 
-handleErrors() {
+function handleErrors() {
 	if [ $? -eq 0 ]; then
 		notify "success" "$1"
 	else
@@ -39,7 +39,7 @@ handleErrors() {
 	fi
 }
 
-readInput() {
+function readInput() {
 	read -e -p "$(echo -e '\b') $1" result
 	echo "$result"
 }
@@ -94,7 +94,7 @@ aws ec2 attach-internet-gateway --vpc-id $vpc_id --internet-gateway-id $my_IGW
 notify 'success' 'Attached'
 
 # function to create route tables, returns route table id
-create_route_table() {
+function create_route_table() {
 	echo $(aws ec2 create-route-table --vpc-id $vpc_id --tag-specification "ResourceType=route-table,Tags=[{Key=Name,Value=$1}]" --query RouteTable.RouteTableId --output text)
 }
 
@@ -107,13 +107,13 @@ handleErrors 'Rule added, public route table is now associated with internet gat
 
 # function for associating subnet with a route table
 
-associateRouteTable() {
+function associateRouteTable() {
 	result=$(aws ec2 associate-route-table --subnet-id $1 --route-table-id $2 2>/dev/null)
 	handleErrors "associated" "failed"
 }
 
 # function for modifying a subnet to assign public ips
-modifySubnet() {
+function modifySubnet() {
 	aws ec2 modify-subnet-attribute --subnet-id $1 --map-public-ip-on-launch
 }
 
@@ -155,12 +155,12 @@ __unused=$(aws ec2 authorize-security-group-ingress --group-id $web_server_sg_id
 handleErrors 'Added, you can now connect to server through internet' 'could not add the inbound rule'
 
 # create a key pair for ssh
-askForKeyName() {
+function askForKeyName() {
 	res=$(readInput "Enter a preferred key pair name (this is used to facilitate ssh connections): ")
 	echo $res
 }
 
-check_keypair() {
+function check_keypair() {
 	notify "info" "Checking if keypair already exists"
 	aws ec2 describe-key-pairs --key-name $1 --query "KeyPairs"[0]."KeyName" --output text 2>/dev/null
 
@@ -180,7 +180,7 @@ check_keypair() {
 	fi
 }
 
-create_keypair() {
+function create_keypair() {
 	local key_name=$1
 	while [ -z $key_name ]; do
 		local key_name=$(askForKeyName)
@@ -190,7 +190,7 @@ create_keypair() {
 	notify "success" "Done. Check current folder for ./$key_name.pem"
 }
 
-doOrNot() {
+function doOrNot() {
 	res=$(readInput "$1? (Y/n)")
 	echo $res
 }
@@ -257,7 +257,7 @@ web_server_Ip=$(aws ec2 describe-instances --instance-ids $web_server_id --query
 # changing the pem key to read only
 file_path='serverSetup.sh'
 
-editFile() {
+function editFile() {
     sed -i "s/$1/$2/g" $file_path
 }
 
