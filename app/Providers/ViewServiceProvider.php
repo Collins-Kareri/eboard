@@ -26,7 +26,7 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        View::composer('tasks', CalenderComposer::class);
+        // View::composer('tasks', CalenderComposer::class);
         View::composer('components.menu-links', MenuLinksComposer::class);
         View::composer('*', ProfileComposer::class);
     }

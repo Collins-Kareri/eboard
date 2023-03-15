@@ -1,7 +1,23 @@
-{{-- @dd(request()) --}}
+{{-- @dd(\App\Helpers\Calender::buildMonths()) --}}
+
+@php
+    use \App\Helpers\Calender;
+
+    $monthNames=Calender::monthNames();
+@endphp
 
 <x-main-layout>
-    <section class="relative flex w-full justify-between mt-8 h-screen flex-col gap-6">
+    <section class="relative flex w-full mt-8 h-screen flex-col gap-6">
+        <div class="flex flex-col w-fit">
+            <span>2023</span>
+            <select id="months" class="p-0 bg-transparent pr-3 flex items-center border-0 cursor-pointer w-[110px]">
+                @foreach ($monthNames as $monthName)
+                <option value="{{$monthName}}" class="bg-night-700">
+                    <p>{{$monthName}}</p>
+                </option>
+                @endforeach
+            </select>
+        </div>
         <!--Tasks-->
         <x-taskscontainer heading="upcoming tasks" />
 
