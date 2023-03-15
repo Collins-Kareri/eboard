@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .nav-theme {
+        @apply shadow-sm shadow-slateGrey-700 bg-night-500;
+    }
+    .menu-theme {
+        @apply bg-night-500 text-slateGrey-200 rounded-lg shadow-sm shadow-slateGrey-700;
+    }
+    .menu-link-theme {
+        @apply hover:text-night-800 hover:bg-honeyDew-500;
+    }
+    .active-menu-link-theme {
+        @apply text-night-800 bg-honeyDew-500;
+    }
+    .page-theme {
+        @apply bg-night-800;
+    }
+    .primary-btn-theme {
+        @apply bg-honeyDew-500 text-night-800 hover:shadow-lg hover:shadow-slateGrey-900 ring-1 ring-night-700;
+    }
+    .secondary-btn-theme {
+        @apply hover:bg-honeyDew-500 hover:text-night-800;
+    }
+    .menu-btn-theme {
+        @apply rounded-md hover:bg-honeyDew-500 hover:text-night-800;
+    }
+    .avatar-theme {
+        @apply bg-slateGrey-200 rounded-full text-slateGrey-800;
+    }
+    .search-bar-theme {
+        @apply border border-slateGrey-100 rounded-lg bg-slateGrey-800 text-slateGrey-100;
+    }
+    .container-theme {
+        @apply bg-slateGrey-900 rounded-2xl shadow-inner shadow-slateGrey-700;
+    }
+    .task-header-theme {
+        @apply border-b border-slateGrey-200 border-opacity-30;
+    }
+    .task-done {
+        @apply line-through;
+    }
+    .toggle-task-status-theme {
+        @apply checked:bg-sage-500 checked:hover:bg-sage-500 checked:focus:bg-sage-500 checked:focus-within:bg-sage-500 bg-slateGrey-900 border-slateGrey-900;
+    }
+    .task-container-theme {
+        @apply shadow-inner shadow-slateGrey-200 bg-slateGrey-800 rounded-md;
+    }
+    .description-theme {
+        @apply text-slateGrey-700;
+    }
+}
+
+@layer components {
+    .scroll_container {
+        scrollbar-width: 6px;
+        scrollbar-color: #dff3e4 #080609;
+    }
+
+    .scroll_container::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        background-color: #dff3e4;
+    }
+
+    .scroll_container::-webkit-scrollbar {
+        width: 4px;
+        background-color: #080609;
+    }
+}
