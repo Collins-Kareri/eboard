@@ -12,13 +12,7 @@ function start_service() {
 start_service "Vite" "npm run dev"
 
 # Start Laravel server
-start_service "Laravel server" "php artisan serve"
-
-# Start Mailpit
-start_service "Mailpit" "mailpit"
-
-# Start Minio server
-start_service "Minio server" "minio server ~/minio --console-address :9090"
+start_service "Laravel server" "php artisan serve --host=0.0.0.0 --port=80"
 
 # Wait for user to press Ctrl+C
 trap "kill 0" SIGINT
