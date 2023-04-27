@@ -1,1 +1,0 @@
-<Link href="/" class="text-2xl capitalize">LOGO</Link>
