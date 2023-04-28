@@ -1,11 +1,11 @@
 import { Link, Head } from "@inertiajs/react";
-import { PageProps } from "@/types";
+// import { PageProps } from "@/types";
+import RootLayout from "@/Layouts/Root";
 
 export default function Welcome({}) {
     return (
-        <>
-            <Head title="Welcome" />
-            <p>Hello</p>
-        </>
+        <RootLayout>
+            <Head title="Home" />
+        </RootLayout>
     );
 }
