@@ -28,7 +28,7 @@ function Search() {
                     >
                         <Popover.Panel
                             className={
-                                "tw-absolute tw-top-[73px] tw-left-0 tw-w-full tw-flex tw-justify-center tw-bg-slate-200 tw-py-4 tw-shadow-md tw-shadow-slate-100"
+                                "tw-absolute tw-top-[73px] tw-left-0 tw-w-full tw-flex tw-justify-center tw-bg-slate-200 tw-py-4 tw-shadow-md tw-shadow-slate-100 tw-z-10"
                             }
                         >
                             <SearchBar />
