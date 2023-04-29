@@ -39,7 +39,7 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                         >
                             <Popover.Panel
                                 className={
-                                    "tw-absolute tw-top-[73px] tw-left-0 md:tw-left-1/2 tw-w-full md:tw-w-1/2 tw-flex tw-justify-end tw-bg-slate-200 tw-p-4 tw-shadow-md tw-shadow-slate-100 tw-flex-col tw-gap-2 md:tw-rounded-l-md"
+                                    "tw-absolute tw-top-[73px] tw-left-0 md:tw-left-1/2 tw-w-full md:tw-w-1/2 tw-flex tw-justify-end tw-bg-slate-200 tw-p-4 tw-shadow-md tw-shadow-slate-100 tw-flex-col tw-gap-2 md:tw-rounded-l-md tw-z-10"
                                 }
                             >
                                 <div className="tw-border-b tw-border-slate-100 tw-rounded-md tw-w-full tw-text-right tw-flex tw-h-fit tw-flex-col tw-pb-2 tw-gap-1">
