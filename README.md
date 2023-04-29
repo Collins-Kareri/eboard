@@ -1,4 +1,4 @@
-# employees_capstone_project
+# eboard
 
 **NOTE: Add your own database credentials _[database config](./dynamic/config/database.php)_ file**
 
