@@ -4,7 +4,7 @@ import { Link } from "@inertiajs/react";
 import { useState } from "react";
 
 function CreateTask() {
-    const [isOpen, setIsOpen] = useState(true),
+    const [isOpen, setIsOpen] = useState(false),
         [data, setData] = useState([]);
     return (
         <div>
