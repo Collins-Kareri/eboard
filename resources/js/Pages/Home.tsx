@@ -1,5 +1,4 @@
-import { Link, Head } from "@inertiajs/react";
-// import { PageProps } from "@/types";
+import { Head } from "@inertiajs/react";
 import RootLayout from "@/Layouts/Root.Layout";
 import Tasks from "@/Components/Tasks/TasksList";
 
