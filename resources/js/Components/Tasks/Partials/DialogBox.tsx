@@ -24,12 +24,12 @@ function DialogBox({ isOpen, setIsOpen, children, title }: DialogBoxProps) {
             <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
                 {/* The backdrop, rendered as a fixed sibling to the panel container */}
                 <div
-                    className="tw-fixed tw-inset-0 tw-bg-black/30"
+                    className="tw-fixed tw-inset-0 tw-bg-black/30 tw-z-30"
                     aria-hidden="true"
                 />
 
                 {/* Full-screen container to center the panel */}
-                <div className="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-p-4">
+                <div className="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-p-4 tw-z-40">
                     {/* The actual dialog panel  */}
                     <Dialog.Panel className="tw-mx-auto tw-bg-slate-200 tw-p-6 tw-rounded-lg tw-w-11/12 tw-flex tw-flex-col tw-gap-4">
                         <Dialog.Title
