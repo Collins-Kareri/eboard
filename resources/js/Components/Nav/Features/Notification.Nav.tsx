@@ -23,7 +23,7 @@ function Notification() {
                     open={isOpen}
                     onClose={() => setIsOpen(false)}
                     className={
-                        "tw-fixed tw-w-full tw-h-screen tw-bg-slate-50 tw-top-0 tw-left-0"
+                        "tw-fixed tw-w-full tw-h-screen tw-bg-slate-50 tw-top-0 tw-left-0 tw-z-30"
                     }
                 >
                     <Dialog.Panel
