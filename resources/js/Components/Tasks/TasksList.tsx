@@ -21,7 +21,7 @@ function Tasks() {
         <div className="tw-w-full tw-flex tw-flex-col tw-gap-4 tw-bg-slate-100 tw-p-4 tw-rounded-lg">
             <section className="tw-flex tw-justify-between tw-h-fit tw-items-center">
                 <h1 className="tw-text-lg">
-                    <span>Today's tasks.</span>
+                    <span>Upcoming tasks.</span>
                     <span className="tw-text-sm">{` (${tasks.length})`}</span>
                 </h1>
                 <CreateTask />
