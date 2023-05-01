@@ -7,15 +7,69 @@ interface DaysProps {
     monthDays: YearProps;
     monthNumber: number;
     TODAY: Date;
+    setMonthNumber: React.Dispatch<React.SetStateAction<number>>;
+    setCurrentYear: React.Dispatch<React.SetStateAction<number>>;
+    currentYear: number;
 }
 
-function Days({ monthNames, monthDays, monthNumber, TODAY }: DaysProps) {
+function Days({
+    monthNames,
+    monthDays,
+    monthNumber,
+    TODAY,
+    setMonthNumber,
+    setCurrentYear,
+    currentYear,
+}: DaysProps) {
     const [currentDate, setCurrentDate] = useState(TODAY.getDate());
 
     function showMonthDays() {
         return (monthDays as YearProps)[
             monthNames[monthNumber] as keyof typeof monthDays
         ].dates as MonthDaysProps[];
+    }
+
+    function selectDate(
+        day_number: number,
+        within_month: boolean,
+        dateIndex: number
+    ) {
+        const dates = showMonthDays(),
+            firstInMonthDateIndex = dates.findIndex(
+                ({ within_month }) => within_month
+            ),
+            lastDateInMonthIndex = dates.findLastIndex(
+                ({ within_month }) => within_month
+            );
+
+        if (dateIndex < firstInMonthDateIndex) {
+            if (monthNumber - 1 >= 0) {
+                setMonthNumber(monthNumber - 1);
+                setCurrentDate(day_number);
+                return;
+            } else {
+                setCurrentYear(currentYear - 1);
+                setMonthNumber(12 - 1);
+                setCurrentDate(day_number);
+                return;
+            }
+        }
+
+        if (dateIndex > lastDateInMonthIndex) {
+            if (monthNumber + 1 < 12) {
+                setMonthNumber(monthNumber + 1);
+                setCurrentDate(day_number);
+                return;
+            } else {
+                setCurrentYear(currentYear + 1);
+                setMonthNumber(0);
+                setCurrentDate(day_number);
+                return;
+            }
+        }
+
+        setCurrentDate(day_number);
+        return;
     }
 
     return (
@@ -32,6 +86,9 @@ function Days({ monthNames, monthDays, monthNumber, TODAY }: DaysProps) {
                                     ? "tw-bg-slate-400"
                                     : ""
                             }`}
+                            onClick={() =>
+                                selectDate(day_number, within_month, index)
+                            }
                         >
                             {day_number}
                         </span>

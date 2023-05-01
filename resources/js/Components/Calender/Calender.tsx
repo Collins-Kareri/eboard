@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Days from "@/Components/Calender/Days";
 import SelectMonth from "@/Components/Calender/Features/SelectMonth";
 import SelectYear from "@/Components/Calender/Features/SelectYear/SelectYear";
 import generateYears from "@/Utils/generateYears";
+import isObjectEmpty from "@/Utils/isObjectEmpty";
 
 interface CalenderProps {
     daysAbbr: [] | string[];
@@ -35,10 +36,7 @@ function Calender() {
         if (calender.daysAbbr.length <= 0 || calender.monthNames.length <= 0) {
             fetch("/calender", { method: "get" })
                 .then((res) => res.json())
-                .then((parseRes) => {
-                    console.log(parseRes);
-                    setCalender(parseRes);
-                })
+                .then((parseRes) => setCalender(parseRes))
                 .catch((err) => alert(err));
         }
         return;
@@ -63,10 +61,12 @@ function Calender() {
                     currentYear={currentYear}
                     yearsRange={yearsRange}
                     setYearsRange={setYearsRange}
+                    setCurrentYear={setCurrentYear}
                 />
                 <SelectMonth
                     monthNames={calender.monthNames}
                     monthIndex={monthNumber}
+                    setMonthNumber={setMonthNumber}
                 />
             </section>
             <section className="tw-grid tw-grid-cols-7 tw-justify-items-center tw-w-full md:tw-w-fit tw-gap-2 tw-border-t tw-border-slate-100 tw-rounded-3xl tw-p-4">
@@ -74,17 +74,21 @@ function Calender() {
                     return (
                         <span
                             key={index}
-                            className="tw-border tw-border-slate-100 tw-block tw-w-full tw-text-center tw-rounded-full"
+                            className="tw-border tw-border-slate-100 tw-block tw-w-full tw-text-center tw-rounded-full tw-px-3"
                         >
                             {day}
                         </span>
                     );
                 })}
+
                 <Days
                     monthNames={calender.monthNames}
                     monthDays={monthDays}
                     monthNumber={monthNumber}
                     TODAY={TODAY}
+                    setCurrentYear={setCurrentYear}
+                    setMonthNumber={setMonthNumber}
+                    currentYear={currentYear}
                 />
             </section>
         </div>
