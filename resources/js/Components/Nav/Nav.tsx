@@ -8,7 +8,7 @@ import Profile from "@/Components/Nav/Features/Profile.Nav";
 
 function Nav() {
     return (
-        <nav className="tw-px-4 tw-py-2 tw-flex tw-flex-row tw-items-center tw-h-fit tw-justify-between tw-border-b tw-border-slate-100 tw-sticky tw-top-0">
+        <nav className="tw-px-4 tw-py-2 tw-flex tw-flex-row tw-items-center tw-h-fit tw-justify-between tw-border-b tw-border-slate-100 tw-sticky tw-top-0 tw-bg-slate-50 tw-z-20">
             <div className="tw-flex tw-flex-row tw-h-fit tw-gap-4">
                 <Logo />
                 {myLinks.map(({ textContent, to }, index) => {
