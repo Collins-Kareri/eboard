@@ -1,21 +1,28 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function SelectMonth({
     monthNames,
     monthIndex,
+    setMonthNumber,
 }: {
     monthNames: [] | string[];
     monthIndex: number;
+    setMonthNumber: React.Dispatch<React.SetStateAction<number>>;
 }) {
     const [selectedMonth, setSelectedMonth] = useState(monthIndex);
 
     function selectMonth(selectedMonthIndex: number) {
         setSelectedMonth(selectedMonthIndex);
+        setMonthNumber(selectedMonthIndex);
         return;
     }
+
+    useEffect(() => {
+        setSelectedMonth(monthIndex);
+    }, [monthIndex]);
 
     return (
         <div className="tw-relative">
