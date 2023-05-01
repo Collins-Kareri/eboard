@@ -1,19 +1,21 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { handleScroll } from "@/Components/Calender/Features/SelectYear/Handlers";
 
 export interface SelectYearProps {
     yearsRange: number[];
     setYearsRange: React.Dispatch<React.SetStateAction<number[]>>;
     currentYear: number;
+    setCurrentYear: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function SelectYear({
     yearsRange,
     setYearsRange,
     currentYear,
+    setCurrentYear,
 }: SelectYearProps) {
     const [selectedYear, setSelectedYear] = useState(
         yearsRange[yearsRange.indexOf(currentYear)]
@@ -21,7 +23,12 @@ function SelectYear({
 
     function selectYear(index: number) {
         setSelectedYear(yearsRange[index]);
+        setCurrentYear(yearsRange[index]);
     }
+
+    useEffect(() => {
+        setSelectedYear(currentYear);
+    }, [currentYear]);
 
     return (
         <div className="tw-relative">
@@ -59,7 +66,7 @@ function SelectYear({
                                         <>
                                             <li
                                                 className={`tw-p-1 tw-rounded-lg tw-text-center tw-cursor-pointer hover:tw-bg-slate-800
-                            ${currentYear === year ? "tw-bg-slate-800" : ""} `}
+                            ${selectedYear === year ? "tw-bg-slate-800" : ""} `}
                                             >
                                                 {year}
                                             </li>
