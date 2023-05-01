@@ -31,13 +31,13 @@ class Calender
     /**
      * Get days names
      */
-    public static function daysInitials()
+    public static function dayAbbreviations()
     {
         $daysOfTheWeek = [];
         $carbonDay = Carbon::parse('Sunday');
 
-        if (Cache::has("days_intials")) {
-            return Cache::get("days_intials");
+        if (Cache::has("day_abbreviations")) {
+            return Cache::get("day_abbreviations");
         }
 
         for ($index = 0; $index < 7; $index++) {
@@ -45,7 +45,7 @@ class Calender
             $carbonDay->addDay();
         }
 
-        Cache::put("days_intials", $daysOfTheWeek);
+        Cache::put("day_abbreviations", $daysOfTheWeek);
 
         return $daysOfTheWeek;
     }
@@ -89,7 +89,7 @@ class Calender
         $results = [];
 
         for ($month = 0; $month < 12; $month++) {
-            $results[$monthNames[$month]] = static::buildMonth($year, $month);
+            $results[$monthNames[$month]] = static::buildMonth($year, $month+1);
         }
 
         return $results;
@@ -97,6 +97,7 @@ class Calender
 
     /**
      *Build month values using the provided year and month values.
+     *The month value should not be zero indexed
      */
     private static function buildMonth($year, $month)
     {
@@ -107,7 +108,14 @@ class Calender
 
         //get the start & end date of the month based on passed year and month
         $startOfMonth = CarbonImmutable::create($year, $month);
+
         $endOfMonth = $startOfMonth->endOfMonth();
+
+        // if($month==4) {
+        //     dd("{$startOfMonth} {$endOfMonth}");
+        // }
+
+
         $days = static::buildMonthDays($startOfMonth, $endOfMonth);
 
         return [
