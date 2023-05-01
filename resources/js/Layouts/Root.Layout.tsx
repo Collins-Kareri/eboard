@@ -5,7 +5,9 @@ function RootLayout({ children }: React.PropsWithChildren) {
     return (
         <>
             <Nav />
-            <main className="tw-p-6">{children}</main>
+            <main className="tw-p-6 tw-flex tw-flex-col tw-gap-6">
+                {children}
+            </main>
         </>
     );
 }
