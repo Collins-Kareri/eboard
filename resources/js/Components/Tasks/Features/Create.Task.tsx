@@ -76,13 +76,6 @@ function CreateTask() {
                     </section>
 
                     <section className="tw-flex tw-items-center tw-gap-4 tw-mt-6">
-                        <button
-                            type="button"
-                            className="tw-px-6 tw-py-2 tw-rounded-md tw-border-slate-900 tw-border hover:tw-bg-slate-300"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            cancel
-                        </button>
                         <Link
                             href={`/task`}
                             as="button"
@@ -91,8 +84,15 @@ function CreateTask() {
                             data={{ data: data }}
                             className="tw-px-6 tw-py-2 tw-bg-slate-400  tw-rounded-md tw-border tw-border-slate-400"
                         >
-                            edit
+                            create
                         </Link>
+                        <button
+                            type="button"
+                            className="tw-px-6 tw-py-2 tw-rounded-md tw-border-slate-900 tw-border hover:tw-bg-slate-300"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            cancel
+                        </button>
                     </section>
                 </form>
             </DialogBox>

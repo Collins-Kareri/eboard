@@ -74,13 +74,6 @@ function EditTask({ id }: { id: string }) {
                     </section>
 
                     <section className="tw-flex tw-items-center tw-gap-4 tw-mt-6">
-                        <button
-                            type="button"
-                            className="tw-px-6 tw-py-2 tw-rounded-md tw-border-slate-900 tw-border hover:tw-bg-slate-300"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            cancel
-                        </button>
                         <Link
                             href={`/task/${id}`}
                             as="button"
@@ -91,6 +84,13 @@ function EditTask({ id }: { id: string }) {
                         >
                             edit
                         </Link>
+                        <button
+                            type="button"
+                            className="tw-px-6 tw-py-2 tw-rounded-md tw-border-slate-900 tw-border hover:tw-bg-slate-300"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            cancel
+                        </button>
                     </section>
                 </form>
             </DialogBox>
