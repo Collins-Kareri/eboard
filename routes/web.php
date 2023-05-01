@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Helpers\Calender;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,22 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Home');
+});
+
+
+Route::get('/tasks', function () {
+    return Inertia::render('Tasks');
+});
+
+Route::get('/calender', function () {
+    return response()->json([
+        'daysAbbr'=>Calender::dayAbbreviations(),
+        'monthNames'=>Calender::monthNames()
+    ]);
+});
+
+Route::get('/calender/{year}', function (int $year) {
+    return response()->json(Calender::buildMonths($year));
 });
 
 // Route::get('/dashboard', function () {
