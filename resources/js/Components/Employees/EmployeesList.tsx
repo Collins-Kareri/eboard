@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import EmployeesTable from "@/Components/Employees/Partials/EmployeesTable";
 import EmployeesCard from "@/Components/Employees/Partials/EmployeesCard";
 import Filter from "@/Components/Employees/Features/Filter";
+import AddEmployee from "@/Components/Employees/Features/Add.Employee";
 
 export interface EmployeesProps {
     id: number;
@@ -74,9 +75,7 @@ function EmployeesList() {
                     />
                     <Filter />
                 </span>
-                <button className="tw-bg-slate-400 tw-px-4 tw-py-2 tw-border tw-border-slate-400 tw-rounded-md tw-capitalize hover:tw-shadow-md hover:tw-shadow-slate-100">
-                    add employee
-                </button>
+                <AddEmployee />
             </section>
             {activeView === "table view" ? (
                 <EmployeesTable employees={employees} />
