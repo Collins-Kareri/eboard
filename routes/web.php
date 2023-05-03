@@ -19,23 +19,29 @@ use App\Helpers\Calender;
 
 Route::get('/', function () {
     return Inertia::render('Home');
-});
-
+})->name('home');
 
 Route::get('/tasks', function () {
     return Inertia::render('Tasks');
+})->name('tasks');
+
+Route::prefix('/calender')->group(function () {
+    Route::get('/', function () {
+        return response()->json([
+            'daysAbbr'=>Calender::dayAbbreviations(),
+            'monthNames'=>Calender::monthNames()
+        ]);
+    });
+
+    Route::get('/{year}', function (int $year) {
+        return response()->json(Calender::buildMonths($year));
+    });
 });
 
-Route::get('/calender', function () {
-    return response()->json([
-        'daysAbbr'=>Calender::dayAbbreviations(),
-        'monthNames'=>Calender::monthNames()
-    ]);
-});
+Route::get('/employees', function () {
+    return Inertia::render('Employees');
+})->name('employees');
 
-Route::get('/calender/{year}', function (int $year) {
-    return response()->json(Calender::buildMonths($year));
-});
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
