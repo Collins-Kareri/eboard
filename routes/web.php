@@ -36,12 +36,20 @@ Route::prefix('/calender')->group(function () {
     Route::get('/{year}', function (int $year) {
         return response()->json(Calender::buildMonths($year));
     });
-});
+})->name('calender');
 
 Route::get('/employees', function () {
     return Inertia::render('Employees');
 })->name('employees');
 
+Route::get('/employees', function () {
+    return Inertia::render('Employees');
+})->name('employees');
+
+
+Route::get('/profile', function () {
+    return Inertia::render('Profile');
+})->name('profile');
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
