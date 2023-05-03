@@ -1,15 +1,12 @@
 export interface AvatarComponentProps {
-    avatarUrl: string;
+    avatarUrl?: string;
     size: "sm" | "md" | "lg" | "xl";
 }
 
 function Avatar({
-    avatarUrl,
+    avatarUrl = "https://ui-avatars.com/api/?name=jd&color=#060406&background=#DFF3E4",
     size,
-}: {
-    avatarUrl: string;
-    size: "sm" | "md" | "lg" | "xl";
-}) {
+}: AvatarComponentProps) {
     const containerSize: { sm: string; md: string; lg: string; xl: string } = {
         sm: "tw-w-10 tw-h-10",
         md: "tw-w-12 tw-h-12",

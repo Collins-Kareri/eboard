@@ -16,12 +16,7 @@ function EmployeesCard({ employees }: { employees: EmployeesProps[] | [] }) {
                             <span className="tw-absolute tw-top-4 tw-right-2">
                                 <ShowEmployee employee={employee} />
                             </span>
-                            <Avatar
-                                avatarUrl={
-                                    "https://ui-avatars.com/api/?name=jd&color=#060406&background=#DFF3E4"
-                                }
-                                size={"xl"}
-                            />
+                            <Avatar size={"xl"} />
                             <section className="tw-flex tw-flex-col tw-justify-center tw-h-fit tw-w-full tw-items-center tw-text-base">
                                 <p>
                                     <b className="tw-capitalize">name:</b>{" "}

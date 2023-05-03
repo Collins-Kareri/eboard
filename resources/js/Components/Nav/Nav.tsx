@@ -25,12 +25,7 @@ function Nav() {
             <div className="tw-flex tw-items-center tw-gap-2">
                 <Search />
                 <Notification />
-                <Profile
-                    avatarUrl={
-                        "https://ui-avatars.com/api/?name=jd&color=#060406&background=#DFF3E4"
-                    }
-                    size={"sm"}
-                />
+                <Profile size={"sm"} />
             </div>
         </nav>
     );

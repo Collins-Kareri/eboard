@@ -20,7 +20,7 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                             <div
                                 className={`tw-flex tw-justify-between tw-items-center tw-w-fit tw-h-fit tw-gap-1`}
                             >
-                                <Avatar avatarUrl={avatarUrl} size={size} />
+                                <Avatar size={size} />
                                 <FontAwesomeIcon
                                     className="tw-cursor-pointer"
                                     icon={faAngleDown}

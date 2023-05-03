@@ -16,12 +16,7 @@ function BodyContent({
         <section className="tw-flex tw-flex-col tw-gap-6">
             <div className="tw-bg-slate-100 tw-shadow-md tw-shadow-slate-900  tw-rounded-md tw-px-4 tw-py-4 tw-flex tw-gap-1 tw-justify-between">
                 <section className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-gap-2">
-                    <Avatar
-                        avatarUrl={
-                            "https://ui-avatars.com/api/?name=lg&color=#060406&background=#DFF3E4"
-                        }
-                        size={"lg"}
-                    />
+                    <Avatar size={"lg"} />
                     <span>{employee.name}</span>
                 </section>
 
