@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Task, { TaskProps } from "@/Components/Tasks/Task";
 import CreateTask from "@/Components/Tasks/Features/Create.Task";
 
-function Tasks() {
+function TasksList() {
     const [tasks, setTasks] = useState<TaskProps[] | []>([]);
 
     //get all task
@@ -51,4 +51,4 @@ function Tasks() {
     );
 }
 
-export default Tasks;
+export default TasksList;
