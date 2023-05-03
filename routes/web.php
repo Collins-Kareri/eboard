@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+// use App\Http\Controllers\ProfileController;
+// use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Helpers\Calender;
@@ -37,10 +37,6 @@ Route::prefix('/calender')->group(function () {
         return response()->json(Calender::buildMonths($year));
     });
 })->name('calender');
-
-Route::get('/employees', function () {
-    return Inertia::render('Employees');
-})->name('employees');
 
 Route::get('/employees', function () {
     return Inertia::render('Employees');
