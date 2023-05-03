@@ -5,9 +5,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Icon from "@/Components/Icon";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmployeesTable from "@/Components/Employees/Partials/EmployeesTable";
 import EmployeesCard from "@/Components/Employees/Partials/EmployeesCard";
+import Filter from "@/Components/Employees/Features/Filter";
 
 export interface EmployeesProps {
     id: number;
@@ -72,13 +72,9 @@ function EmployeesList() {
                         }`}
                         onClick={() => setActiveView("card view")}
                     />
-                    <button className="tw-relative tw-z-10 tw-h-fit tw-flex tw-items-center hover:tw-bg-slate-100 tw-cursor-pointer tw-px-4 tw-py-2 tw-rounded-md hover:tw-shadow-sm hover:tw-shadow-slate-400 tw-gap-1">
-                        <FontAwesomeIcon icon={faFilter} size="lg" />
-                        <p>filters</p>
-                        <p className="tw-opacity-50 tw-h-fit">(0)</p>
-                    </button>
+                    <Filter />
                 </span>
-                <button className="tw-bg-slate-400 tw-px-4 tw-py-2 tw-border tw-border-slate-400 tw-rounded-md tw-capitalize hover:tw-shadow-md hover:tw-shadow-slate-100 tw-leading-tight">
+                <button className="tw-bg-slate-400 tw-px-4 tw-py-2 tw-border tw-border-slate-400 tw-rounded-md tw-capitalize hover:tw-shadow-md hover:tw-shadow-slate-100">
                     add employee
                 </button>
             </section>
