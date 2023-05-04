@@ -44,7 +44,7 @@ Route::get('/employees', function () {
 
 
 Route::get('/profile', function () {
-    return Inertia::render('Profile');
+    return Inertia::render('Profile/Profile');
 })->name('profile');
 
 // Route::get('/dashboard', function () {
