@@ -13,7 +13,7 @@ function FormInputsLayout({
 }: FormInputsLayoutProps) {
     return (
         <div className="tw-flex tw-flex-col tw-relative tw-w-full">
-            <label className={`tw-capitalize tw-mb-1`} {...rest}>
+            <label className={`tw-capitalize tw-mb-1 tw-font-bold`} {...rest}>
                 {labelText}
             </label>
             {children}
