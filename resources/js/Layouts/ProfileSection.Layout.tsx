@@ -5,7 +5,11 @@ interface SectionLayoutProps extends PropsWithChildren {
     description: string;
 }
 
-function SectionLayout({ title, description, children }: SectionLayoutProps) {
+function ProfileSectionLayout({
+    title,
+    description,
+    children,
+}: SectionLayoutProps) {
     return (
         <section className="tw-flex tw-gap-8 tw-items-start tw-justify-center tw-flex-col md:tw-flex-row">
             <span className="tw-inline-block tw-w-full md:tw-w-1/5">
@@ -20,4 +24,4 @@ function SectionLayout({ title, description, children }: SectionLayoutProps) {
     );
 }
 
-export default SectionLayout;
+export default ProfileSectionLayout;
