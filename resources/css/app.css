@@ -4,10 +4,27 @@
 
 @layer base {
     * {
-        @apply tw-leading-tight;
+        @apply tw-leading-tight tw-ease-linear tw-duration-100 tw-transition-all;
     }
 
     button {
-        @apply tw-capitalize;
+        @apply tw-capitalize tw-px-4 tw-py-2 tw-rounded-md tw-border-[1px];
+    }
+
+    input,
+    textarea {
+        @apply !tw-rounded-md !tw-bg-slate-950;
+    }
+}
+
+@layer components {
+    .primaryBtn {
+        @apply tw-border-slate-400 tw-bg-slate-400 tw-shadow-md hover:tw-shadow-slate-900;
+    }
+    .secondaryBtn {
+        @apply tw-border-slate-100 tw-bg-slate-100 tw-shadow-sm hover:tw-shadow-slate-950;
+    }
+    .tertiaryBtn {
+        @apply tw-border-slate-100 hover:!tw-bg-slate-50 hover:tw-shadow-sm tw-shadow-slate-950 tw-border-0 hover:tw-border-[1px] tw-bg-slate-100;
     }
 }
