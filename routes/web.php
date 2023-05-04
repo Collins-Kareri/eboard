@@ -17,35 +17,40 @@ use App\Helpers\Calender;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/login', function () {
+    return Inertia::render('Login');
+})->name('login');
 
-Route::get('/tasks', function () {
-    return Inertia::render('Tasks');
-})->name('tasks');
-
-Route::prefix('/calender')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/', function () {
-        return response()->json([
-            'daysAbbr'=>Calender::dayAbbreviations(),
-            'monthNames'=>Calender::monthNames()
-        ]);
-    });
+        return Inertia::render('Home');
+    })->name('home');
 
-    Route::get('/{year}', function (int $year) {
-        return response()->json(Calender::buildMonths($year));
-    });
-})->name('calender');
+    Route::get('/tasks', function () {
+        return Inertia::render('Tasks');
+    })->name('tasks');
 
-Route::get('/employees', function () {
-    return Inertia::render('Employees');
-})->name('employees');
+    Route::prefix('/calender')->group(function () {
+        Route::get('/', function () {
+            return response()->json([
+                'daysAbbr'=>Calender::dayAbbreviations(),
+                'monthNames'=>Calender::monthNames()
+            ]);
+        });
 
+        Route::get('/{year}', function (int $year) {
+            return response()->json(Calender::buildMonths($year));
+        });
+    })->name('calender');
 
-Route::get('/profile', function () {
-    return Inertia::render('Profile/Profile');
-})->name('profile');
+    Route::get('/employees', function () {
+        return Inertia::render('Employees');
+    })->name('employees');
+
+    Route::get('/profile', function () {
+        return Inertia::render('Profile/Profile');
+    })->name('profile');
+});
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
