@@ -25,7 +25,7 @@ function DestroyTask({ id }: { id: string }) {
                 <section className="tw-flex tw-items-center tw-gap-4 tw-mt-6">
                     <button
                         type="button"
-                        className="tw-px-6 tw-py-2 tw-rounded-md tw-border-slate-900 tw-border hover:tw-bg-slate-300 tw-capitalize"
+                        className="secondaryBtn"
                         onClick={() => setIsOpen(false)}
                     >
                         cancel
@@ -35,7 +35,7 @@ function DestroyTask({ id }: { id: string }) {
                         as="button"
                         method="delete"
                         type="button"
-                        className="tw-px-6 tw-py-2 tw-bg-red-400  tw-rounded-md tw-border tw-border-red-400 tw-capitalize"
+                        className="primaryBtn tw-border-red-400 tw-bg-red-400"
                     >
                         delete
                     </Link>

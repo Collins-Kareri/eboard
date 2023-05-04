@@ -6,10 +6,7 @@ function AddEmployee() {
 
     return (
         <span>
-            <button
-                className="tw-bg-slate-400 tw-px-4 tw-py-2 tw-border tw-border-slate-400 tw-rounded-md tw-capitalize hover:tw-shadow-md hover:tw-shadow-slate-100"
-                onClick={() => setIsOpen(true)}
-            >
+            <button className="primaryBtn" onClick={() => setIsOpen(true)}>
                 add employee
             </button>
             <DialogBox

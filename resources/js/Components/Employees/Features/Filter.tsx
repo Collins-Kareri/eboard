@@ -10,7 +10,7 @@ function Filter() {
     return (
         <>
             <button
-                className="tw-relative tw-z-10 tw-h-fit tw-flex tw-items-center hover:tw-bg-slate-100 tw-cursor-pointer tw-px-4 tw-py-2 tw-rounded-md hover:tw-shadow-sm hover:tw-shadow-slate-400 tw-gap-1"
+                className="tertiaryBtn tw-flex tw-items-center tw-w-fit"
                 onClick={() => setIsOpen(true)}
             >
                 <FontAwesomeIcon icon={faFilter} size="lg" />

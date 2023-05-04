@@ -47,7 +47,7 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                                         Manage settings
                                     </h6>
                                     <Link
-                                        href="/profile"
+                                        href={route("profile")}
                                         className={`tw-p-2 hover:tw-bg-slate-400 tw-rounded-md ${
                                             url === "/profile"
                                                 ? "tw-bg-slate-400"
@@ -59,7 +59,7 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                                 </div>
                                 <Link
                                     href="/logout"
-                                    className={`tw-p-2 hover:tw-bg-slate-400 tw-rounded-md tw-text-right`}
+                                    className={`tw-border-0 tw-p-2 hover:tw-bg-slate-400  tw-text-right`}
                                     as="button"
                                     method="post"
                                 >

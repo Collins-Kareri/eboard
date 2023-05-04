@@ -40,7 +40,7 @@ function Task({
                 <input
                     type="checkbox"
                     ref={completedRef}
-                    className="tw-rounded-md tw-cursor-pointer"
+                    className="tw-cursor-pointer"
                     onClick={toggleStatus}
                 />
                 <span className="tw-flex tw-gap-2">

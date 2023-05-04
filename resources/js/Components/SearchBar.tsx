@@ -11,7 +11,7 @@ function SearchBar() {
             <input
                 type="text"
                 placeholder="Search employees"
-                className="tw-outline-none tw-border-none tw-pl-0 tw-rounded-r-lg tw-bg-transparent tw-flex-1 tw-py-3"
+                className="tw-outline-none tw-border-none tw-pl-0 tw-rounded-r-lg tw-bg-transparent tw-flex-1 tw-py-3 focus:tw-ring-0"
             />
         </div>
     );

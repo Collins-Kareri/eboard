@@ -9,7 +9,7 @@ function Search() {
             {({ open }) => (
                 <>
                     <Popover.Button
-                        className={"tw-border-none tw-outline-none"}
+                        className={"tw-border-none tw-outline-none tw-p-0"}
                     >
                         <Icon
                             icon={open ? faXmark : faMagnifyingGlass}
