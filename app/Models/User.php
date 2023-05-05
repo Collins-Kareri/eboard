@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasAvatar;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasAvatar;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +24,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'job_title',
+        'phone_number',
         'email',
         'password',
+        'owns_department'
     ];
 
     /**
@@ -41,4 +51,29 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+    * The accessors to append to the model's array form.
+    *
+    * @var array<int, string>
+    */
+    protected $appends = [
+        'avatar_url' //from the useAvatar trait
+    ];
+
+    /**
+     * Get the tasks for user.
+     */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Tasks::class);
+    }
+
+    /**
+     * Each user belongs to a single department.
+     */
+    public function memberOf(): BelongsTo
+    {
+        return $this->belongsTo(Departments::class);
+    }
 }
