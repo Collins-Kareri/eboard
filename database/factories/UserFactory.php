@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Helpers\EmployeeId;
+use App\Helpers\EmployeeID;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -19,11 +19,15 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'job_title' => fake()->jobTitle(),
+            'avatar' => null,
+            'employeeID'=>EmployeeID::generate(),
+            'phone_number' => fake()->e164PhoneNumber(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'employeeID'=>EmployeeId::generate(),
             'remember_token' => Str::random(10),
         ];
     }
