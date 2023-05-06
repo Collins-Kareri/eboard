@@ -5,6 +5,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Helpers\Calender;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,16 @@ use App\Helpers\Calender;
 |
 */
 
-Route::get('/login', function () {
-    return Inertia::render('Login');
-})->name('login');
+Route::middleware('guest')->group(function () {
+    Route::controller(AuthenticatedSessionController::class)->group(function () {
+        Route::get('login', 'create')->name('login.create');
+        Route::post('login', 'store')->name('login.store');
+
+    });
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+                    ->name('password.request');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
@@ -50,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         return Inertia::render('Profile/Profile');
     })->name('profile');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
 // Route::get('/dashboard', function () {
