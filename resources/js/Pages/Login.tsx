@@ -2,6 +2,7 @@ import Logo from "@/Components/Logo";
 import FormInputsLayout from "@/Layouts/FormInputs.Layout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
+import togglePasswordVisibility from "@/Utils/togglePasswordVisibility";
 
 function Login({
     status,
@@ -18,14 +19,6 @@ function Login({
             password: "",
             remember: false,
         });
-
-    function togglePasswordVisibility() {
-        if (passwordVisibility === "show") {
-            setPasswordVisibility("hide");
-        } else {
-            setPasswordVisibility("show");
-        }
-    }
 
     return (
         <div className="tw-p-6 tw-flex tw-justify-center tw-items-center tw-h-screen">
@@ -58,7 +51,12 @@ function Login({
                         />
                         <span
                             className="tw-px-2 tw-py-1 tw-h-full tw-block tw-cursor-pointer hover:tw-bg-slate-900 tw-mr-2 tw-rounded-md"
-                            onClick={togglePasswordVisibility}
+                            onClick={() =>
+                                togglePasswordVisibility(
+                                    passwordVisibility,
+                                    setPasswordVisibility
+                                )
+                            }
                         >
                             {passwordVisibility === "hide" ? "show" : "hide"}
                         </span>
