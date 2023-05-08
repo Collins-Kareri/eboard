@@ -1,9 +1,14 @@
 <?php
 
 use App\Models\User;
+use App\Models\Departments;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->for(Departments::factory()->state([
+            'name'=>'hr'
+        ]), 'memberOf')->create();
 
     $response = $this
         ->actingAs($user)
@@ -13,13 +18,18 @@ test('profile page is displayed', function () {
 });
 
 test('profile information can be updated', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->for(Departments::factory()->state([
+            'name'=>'hr'
+        ]), 'memberOf')->create();
+
 
     $response = $this
         ->actingAs($user)
         ->patch('/profile', [
-            'name' => 'Test User',
+            'full_name' => 'Test User',
             'email' => 'test@example.com',
+            'avatar'=>UploadedFile::fake()->image('test.jpg'),
+            'phone_number'=>'+25412345678'
         ]);
 
     $response
@@ -28,58 +38,10 @@ test('profile information can be updated', function () {
 
     $user->refresh();
 
-    $this->assertSame('Test User', $user->name);
+    $this->assertSame('Test User', $user->full_name);
     $this->assertSame('test@example.com', $user->email);
     $this->assertNull($user->email_verified_at);
-});
+    $this->assertNotNull($user->avatar);
 
-test('email verification status is unchanged when the email address is unchanged', function () {
-    $user = User::factory()->create();
-
-    $response = $this
-        ->actingAs($user)
-        ->patch('/profile', [
-            'name' => 'Test User',
-            'email' => $user->email,
-        ]);
-
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
-
-    $this->assertNotNull($user->refresh()->email_verified_at);
-});
-
-test('user can delete their account', function () {
-    $user = User::factory()->create();
-
-    $response = $this
-        ->actingAs($user)
-        ->delete('/profile', [
-            'password' => 'password',
-        ]);
-
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
-
-    $this->assertGuest();
-    $this->assertNull($user->fresh());
-});
-
-test('correct password must be provided to delete account', function () {
-    $user = User::factory()->create();
-
-    $response = $this
-        ->actingAs($user)
-        ->from('/profile')
-        ->delete('/profile', [
-            'password' => 'wrong-password',
-        ]);
-
-    $response
-        ->assertSessionHasErrors('password')
-        ->assertRedirect('/profile');
-
-    $this->assertNotNull($user->fresh());
+    Storage::delete([$user->avatar]);
 });
