@@ -3,8 +3,15 @@ export interface User {
     name: string;
     email: string;
     email_verified_at: string;
-    avatarUrl: string;
-    departmentId: number;
+    avatar_url: string;
+    created_at: string;
+    employeeID: string;
+    full_name: string;
+    job_title: string;
+    current_department: string;
+    owns_department: boolean;
+    phone_number: string;
+    avatar: null | string | File;
 }
 
 export type PageProps<
