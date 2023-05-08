@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -26,11 +27,12 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'job_title',
         'phone_number',
         'email',
-        'password',
-        'owns_department'
+        'avatar',
+        'password'
+        // 'job_title',
+        // 'owns_department'
     ];
 
     /**
@@ -41,6 +43,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'first_name',
+        'last_name',
+        'member_of_id',
+        'memberof'
     ];
 
     /**
@@ -50,6 +56,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'owns_department'=>'boolean'
     ];
 
     /**
@@ -58,8 +65,33 @@ class User extends Authenticatable
     * @var array<int, string>
     */
     protected $appends = [
-        'avatar_url' //from the useAvatar trait
+        'avatar_url', //from the useAvatar trait
+        'full_name',
+        'current_department'
     ];
+
+    /**
+     * Returns concated first_name and last_name columns.
+     */
+    public function fullName(): Attribute
+    {
+        return Attribute::make(
+            get:fn () =>ucfirst($this->first_name).' '.ucfirst($this->last_name)
+        );
+    }
+
+    /**
+     * Get user department
+     */
+    public function currentDepartment(): Attribute
+    {
+        return Attribute::get(
+            function () {
+                return $this->memberof->name;
+            }
+        );
+
+    }
 
     /**
      * Get the tasks for user.
