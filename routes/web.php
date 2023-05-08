@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Helpers\Calender;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -65,6 +66,8 @@ Route::middleware('auth')->group(function () {
         $request->user()->deleteAvatar();
         return redirect()->route('profile.update');
     })->name('avatar.destory');
+
+    Route::put('/password', [PasswordController::class,'update'])->name('password.update');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
