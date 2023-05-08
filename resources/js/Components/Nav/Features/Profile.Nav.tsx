@@ -1,11 +1,13 @@
 import Avatar, { AvatarComponentProps } from "@/Components/Avatar";
+import { PageProps } from "@/types";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Popover, Transition } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
 
-function Profile({ avatarUrl, size }: AvatarComponentProps) {
-    const { url } = usePage();
+function Profile() {
+    const { url, props } = usePage<PageProps>(),
+        { full_name, current_department, owns_department } = props.auth.user;
 
     return (
         <>
@@ -20,7 +22,7 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                             <div
                                 className={`tw-flex tw-justify-between tw-items-center tw-w-fit tw-h-fit tw-gap-1`}
                             >
-                                <Avatar size={size} />
+                                <Avatar size={"md"} />
                                 <FontAwesomeIcon
                                     className="tw-cursor-pointer"
                                     icon={faAngleDown}
@@ -47,7 +49,7 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                                         Manage settings
                                     </h6>
                                     <Link
-                                        href={route("profile")}
+                                        href={route("profile.edit")}
                                         className={`tw-p-2 hover:tw-bg-slate-400 tw-rounded-md ${
                                             url === "/profile"
                                                 ? "tw-bg-slate-400"
@@ -66,9 +68,12 @@ function Profile({ avatarUrl, size }: AvatarComponentProps) {
                                     Logout
                                 </Link>
 
-                                <span className="tw-block tw-w-full tw-text-right tw-text-xs tw-font-thin tw-italic tw-text-slate-100 tw-opacity-50">
-                                    <p>John Doe.</p>
-                                    <p>manager, human resources.</p>
+                                <span className="tw-block tw-w-full tw-text-right tw-text-xs tw-font-thin tw-italic tw-text-slate-100 tw-opacity-50 tw-capitalize">
+                                    <p>{full_name}.</p>
+                                    <p>
+                                        {owns_department ? "manager, " : ""}
+                                        {current_department}.
+                                    </p>
                                 </span>
                             </Popover.Panel>
                         </Transition>
