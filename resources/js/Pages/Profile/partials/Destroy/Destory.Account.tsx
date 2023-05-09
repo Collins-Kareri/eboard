@@ -1,7 +1,10 @@
 import ProfileSectionLayout from "@/Layouts/ProfileSection.Layout";
-import { Link } from "@inertiajs/react";
+import { useState } from "react";
+import DestroyConfirmation from "@/Pages/Profile/partials/Destroy/Destory.Confirmation";
 
-function DeleteAccount() {
+function DestroyAccount() {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <ProfileSectionLayout
             title={"Delete Account"}
@@ -11,16 +14,15 @@ function DeleteAccount() {
                 Once your account is deleted, all of its resources and data will
                 be permanently deleted.
             </p>
-            <Link
-                href="/profile/delete"
+            <button
                 className={`tw-border-red-400 tw-bg-red-400`}
-                as="button"
-                method="delete"
+                onClick={() => setIsOpen(true)}
             >
                 delete account
-            </Link>
+            </button>
+            <DestroyConfirmation isOpen={isOpen} setIsOpen={setIsOpen} />
         </ProfileSectionLayout>
     );
 }
 
-export default DeleteAccount;
+export default DestroyAccount;
