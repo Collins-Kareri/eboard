@@ -8,11 +8,12 @@ function UpdatePassword() {
     const [passwordVisibility, setPasswordVisibility] = useState<
             "show" | "hide"
         >("hide"),
-        { data, setData, reset, put, processing } = useForm({
-            current_password: "",
-            password: "",
-            password_confirmation: "",
-        });
+        { data, setData, reset, put, processing, errors, clearErrors } =
+            useForm({
+                current_password: "",
+                password: "",
+                password_confirmation: "",
+            });
 
     function updatePassword(
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -22,7 +23,18 @@ function UpdatePassword() {
         put(route("password.update"), {
             preserveScroll: true,
             onSuccess: () => reset(),
+            errorBag: "updatePassword",
         });
+    }
+
+    function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
+        const id = e.target.id as keyof typeof data;
+
+        if (errors[id]) {
+            clearErrors(id);
+        }
+
+        setData(id, e.target.value);
     }
 
     return (
@@ -35,6 +47,7 @@ function UpdatePassword() {
                     <FormInputsLayout
                         labelText={"current password"}
                         htmlFor="current_password"
+                        errors={errors.current_password}
                     >
                         <input
                             type={
@@ -45,15 +58,14 @@ function UpdatePassword() {
                             id="current_password"
                             autoComplete="current-password"
                             value={data.current_password}
-                            onChange={(e) =>
-                                setData("current_password", e.target.value)
-                            }
+                            onChange={handleTyping}
                         />
                     </FormInputsLayout>
 
                     <FormInputsLayout
                         labelText={"new password"}
-                        htmlFor="new_password"
+                        htmlFor="password"
+                        errors={errors.password}
                     >
                         <input
                             type={
@@ -61,18 +73,17 @@ function UpdatePassword() {
                                     ? "text"
                                     : "password"
                             }
-                            id="new_password"
+                            id="password"
                             autoComplete="new-password"
                             value={data.password}
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
+                            onChange={handleTyping}
                         />
                     </FormInputsLayout>
 
                     <FormInputsLayout
                         labelText={"confirm new password"}
-                        htmlFor="confirm_new_password"
+                        htmlFor="password_confirmation"
+                        errors={errors.password_confirmation}
                     >
                         <input
                             type={
@@ -80,12 +91,10 @@ function UpdatePassword() {
                                     ? "text"
                                     : "password"
                             }
-                            id="confirm_new_password"
+                            id="password_confirmation"
                             autoComplete="new-password"
                             value={data.password_confirmation}
-                            onChange={(e) =>
-                                setData("password_confirmation", e.target.value)
-                            }
+                            onChange={handleTyping}
                         />
                     </FormInputsLayout>
 
