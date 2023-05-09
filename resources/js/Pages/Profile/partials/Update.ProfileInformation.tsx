@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 export default function EditProfileInformation({}) {
     const { full_name, email, avatar_url, avatar, phone_number } =
             usePage<PageProps>().props.auth.user,
-        { data, setData, processing, post } = useForm({
+        { data, setData, processing, post, errors, clearErrors } = useForm({
             _method: "patch",
             full_name: full_name,
             email: email,
@@ -26,6 +26,7 @@ export default function EditProfileInformation({}) {
     function updateInformation() {
         post(route("profile.update"), {
             preserveScroll: true,
+            errorBag: "updateProfileInformation",
         });
     }
 
@@ -49,6 +50,7 @@ export default function EditProfileInformation({}) {
             if (photoInputRef.current) {
                 photoInputRef.current.value = "";
             }
+            clearErrors("avatar");
             return;
         }
 
@@ -56,6 +58,16 @@ export default function EditProfileInformation({}) {
         router.delete(route("avatar.destory"), {
             preserveScroll: true,
         });
+    }
+
+    function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
+        const id = e.target.id as keyof typeof data;
+
+        if (errors[id]) {
+            clearErrors(id);
+        }
+
+        setData(id, e.target.value);
     }
 
     return (
@@ -95,24 +107,39 @@ export default function EditProfileInformation({}) {
                             <></>
                         )}
                     </section>
+                    {errors.avatar ? (
+                        <span className="tw-text-red-400 tw-font-light tw-w-full tw-inline-block tw-flex-1">
+                            {errors.avatar}
+                        </span>
+                    ) : (
+                        <></>
+                    )}
                 </div>
 
-                <FormInputsLayout labelText={"full name"} htmlFor="full_name">
+                <FormInputsLayout
+                    labelText={"full name"}
+                    htmlFor="full_name"
+                    errors={errors.full_name}
+                >
                     <input
                         type="text"
                         id="full_name"
                         value={data.full_name}
-                        onChange={(e) => setData("full_name", e.target.value)}
+                        onChange={handleTyping}
                         required
                     />
                 </FormInputsLayout>
 
-                <FormInputsLayout labelText={"email"} htmlFor="email">
+                <FormInputsLayout
+                    labelText={"email"}
+                    htmlFor="email"
+                    errors={errors.email}
+                >
                     <input
                         type="email"
                         id="email"
                         value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
+                        onChange={handleTyping}
                         required
                     />
                 </FormInputsLayout>
@@ -120,14 +147,13 @@ export default function EditProfileInformation({}) {
                 <FormInputsLayout
                     labelText={"phone number"}
                     htmlFor="phone_number"
+                    errors={errors.phone_number}
                 >
                     <input
                         type="tel"
                         id="phone_number"
                         value={data.phone_number}
-                        onChange={(e) =>
-                            setData("phone_number", e.target.value)
-                        }
+                        onChange={handleTyping}
                         required
                     />
                 </FormInputsLayout>
