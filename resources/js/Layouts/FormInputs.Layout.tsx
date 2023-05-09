@@ -3,12 +3,14 @@ import React, { LabelHTMLAttributes } from "react";
 interface FormInputsLayoutProps
     extends React.PropsWithChildren<LabelHTMLAttributes<HTMLLabelElement>> {
     labelText: string;
+    errors?: string;
 }
 
 function FormInputsLayout({
     labelText,
     children,
     className,
+    errors,
     ...rest
 }: FormInputsLayoutProps) {
     return (
@@ -17,6 +19,7 @@ function FormInputsLayout({
                 {labelText}
             </label>
             {children}
+            <span className="tw-text-red-400 tw-font-light">{errors}</span>
         </div>
     );
 }
