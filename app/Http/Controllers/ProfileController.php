@@ -70,11 +70,11 @@ class ProfileController extends Controller
     {
         Validator::make($request->all(), [
             'password' => ['required', 'current_password'],
+            'owns_department'=>['boolean','declined']
+        ], [
+            'declined'=>'Delete account operation not available to department owners'
         ])->validateWithBag('deleteAccount');
 
-        if(true) {
-            return back();
-        }
 
         $user = $request->user();
 

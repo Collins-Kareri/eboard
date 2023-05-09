@@ -3,21 +3,25 @@ import DialogBox, {
 } from "@/Components/Tasks/Partials/DialogBox";
 import FormInputsLayout from "@/Layouts/FormInputs.Layout";
 import togglePasswordVisibility from "@/Utils/togglePasswordVisibility";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import { PageProps } from "@/types";
 
 export default function DestroyConfirmation({
     isOpen,
     setIsOpen,
 }: Omit<DialogBoxProps, "title">) {
-    const {
+    const { owns_department } = usePage<PageProps>().props.auth.user,
+        {
             data,
             setData,
             errors,
             clearErrors,
             delete: destroy,
+            processing,
         } = useForm({
             password: "",
+            owns_department: owns_department,
         }),
         [passwordVisibility, setPasswordVisibility] = useState<"show" | "hide">(
             "hide"
@@ -90,7 +94,12 @@ export default function DestroyConfirmation({
                     >
                         cancel
                     </button>
-                    <button className="primaryBtn">continue</button>
+                    <button
+                        className="primaryBtn"
+                        disabled={processing || owns_department}
+                    >
+                        continue
+                    </button>
                 </section>
             </form>
         </DialogBox>
