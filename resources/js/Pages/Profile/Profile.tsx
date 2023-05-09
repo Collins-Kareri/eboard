@@ -1,8 +1,8 @@
 import { Head } from "@inertiajs/react";
 import RootLayout from "@/Layouts/Root.Layout";
-import EditProfileInformation from "@/Pages/Profile/partials/Edit.ProfileInformation";
+import EditProfileInformation from "@/Pages/Profile/partials/Update.ProfileInformation";
 import UpdatePassword from "@/Pages/Profile/partials/Update.Password";
-import DeleteAccount from "@/Pages/Profile/partials/Delete.Account";
+import DestroyAccount from "@/Pages/Profile/partials/Destroy/Destory.Account";
 
 export default function Profile() {
     return (
@@ -10,7 +10,7 @@ export default function Profile() {
             <Head title="Profile" />
             <EditProfileInformation />
             <UpdatePassword />
-            <DeleteAccount />
+            <DestroyAccount />
         </RootLayout>
     );
 }
