@@ -3,7 +3,7 @@ import Icon from "@/Components/Icon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PropsWithChildren, Fragment } from "react";
 
-interface DialogBoxProps extends PropsWithChildren {
+export interface DialogBoxProps extends PropsWithChildren {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     title: string;
@@ -37,7 +37,7 @@ function DialogBox({ isOpen, setIsOpen, children, title }: DialogBoxProps) {
                                 "tw-flex tw-justify-between tw-items-center tw-w-full tw-relative tw-capitalize"
                             }
                         >
-                            <h1 className="tw-text-lg tw-font-bold">{title}</h1>
+                            <p className="tw-text-lg tw-font-bold">{title}</p>
                             <Icon
                                 icon={faXmark}
                                 onClick={() => setIsOpen(false)}
