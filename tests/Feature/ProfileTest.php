@@ -45,3 +45,33 @@ test('profile information can be updated', function () {
 
     Storage::delete([$user->avatar]);
 });
+
+test('profile can be delete if not department manager', function () {
+    $user = User::factory()->state([
+        'password'=>'secret'
+    ])->for(Departments::factory()->state([
+            'name'=>'hr'
+        ]), 'memberOf')->create();
+
+
+    $this
+        ->actingAs($user)
+        ->delete('/profile', [
+            'password'=>'secret',
+            'owns_department'=>$user->owns_department
+        ]);
+
+    expect($user->fresh()->count())->toEqual(1);
+});
+
+test('correct password must be provided before account can be deleted', function () {
+    $this->actingAs($user = User::factory()->for(Departments::factory()->state([
+            'name'=>'hr'
+        ]), 'memberOf')->create());
+
+    $response = $this->delete('/user', [
+        'password' => 'wrong-password',
+    ]);
+
+    expect($user->fresh())->not->toBeNull();
+});
