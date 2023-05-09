@@ -5,7 +5,7 @@ interface SectionLayoutProps extends PropsWithChildren {
     description: string;
 }
 
-function ProfileSectionLayout({
+function SettingSectionLayout({
     title,
     description,
     children,
@@ -24,4 +24,4 @@ function ProfileSectionLayout({
     );
 }
 
-export default ProfileSectionLayout;
+export default SettingSectionLayout;

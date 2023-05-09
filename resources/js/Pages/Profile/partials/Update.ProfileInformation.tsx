@@ -1,7 +1,7 @@
 import Avatar from "@/Components/Avatar";
 import Icon from "@/Components/Icon";
 import FormInputsLayout from "@/Layouts/FormInputs.Layout";
-import ProfileSectionLayout from "@/Layouts/ProfileSection.Layout";
+import SettingSectionLayout from "@/Layouts/SettingSection.Layout";
 import avatarIsPlaceholder from "@/Utils/avatarIsPlaceholder";
 import { PageProps } from "@/types";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -71,7 +71,7 @@ export default function EditProfileInformation({}) {
     }
 
     return (
-        <ProfileSectionLayout
+        <SettingSectionLayout
             title={"Profile information"}
             description={"Edit your profile information and avatar"}
         >
@@ -169,6 +169,6 @@ export default function EditProfileInformation({}) {
                     </button>
                 </div>
             </form>
-        </ProfileSectionLayout>
+        </SettingSectionLayout>
     );
 }

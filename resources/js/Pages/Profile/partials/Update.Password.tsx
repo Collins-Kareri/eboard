@@ -1,8 +1,8 @@
 import FormInputsLayout from "@/Layouts/FormInputs.Layout";
-import ProfileSectionLayout from "@/Layouts/ProfileSection.Layout";
+import SettingSectionLayout from "@/Layouts/SettingSection.Layout";
 import { useState } from "react";
 import togglePasswordVisibility from "@/Utils/togglePasswordVisibility";
-import { Link, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 
 function UpdatePassword() {
     const [passwordVisibility, setPasswordVisibility] = useState<
@@ -38,7 +38,7 @@ function UpdatePassword() {
     }
 
     return (
-        <ProfileSectionLayout
+        <SettingSectionLayout
             title={"Security"}
             description={"Change your password"}
         >
@@ -123,7 +123,7 @@ function UpdatePassword() {
                     </button>
                 </div>
             </form>
-        </ProfileSectionLayout>
+        </SettingSectionLayout>
     );
 }
 

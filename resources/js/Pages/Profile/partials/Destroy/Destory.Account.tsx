@@ -1,4 +1,4 @@
-import ProfileSectionLayout from "@/Layouts/ProfileSection.Layout";
+import SettingSectionLayout from "@/Layouts/SettingSection.Layout";
 import { useState } from "react";
 import DestroyConfirmation from "@/Pages/Profile/partials/Destroy/Destory.Confirmation";
 import { PageProps } from "@/types";
@@ -9,7 +9,7 @@ function DestroyAccount() {
         { owns_department } = usePage<PageProps>().props.auth.user;
 
     return (
-        <ProfileSectionLayout
+        <SettingSectionLayout
             title={"Delete Account"}
             description={"Permanently delete your account"}
         >
@@ -37,7 +37,7 @@ function DestroyAccount() {
                     />
                 </>
             )}
-        </ProfileSectionLayout>
+        </SettingSectionLayout>
     );
 }
 
