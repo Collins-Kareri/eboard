@@ -4,7 +4,7 @@
 
 - To deploy the webserver and all it's components on aws run the bash file: **_[deploy script](./deployScript.sh)_**.
 
-- To develop and test your own script run the bash file: **_[deploy script test](./deployScriptTest.sh)_**
+- To test the deployment script run the bash file: **_[deploy script test](./deployScriptTest.sh)_**
 
 - The test script was tested with **_[localstack](https://localstack.cloud/)_**
 
