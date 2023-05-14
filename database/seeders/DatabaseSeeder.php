@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Enums\UserRole;
 use App\Models\Departments;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,14 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->for(Departments::factory()->state([
             'name'=>'hr'
-        ]), 'memberOf')
+        ]))
         ->create([
             'first_name'=>'John',
             'last_name'=>'Doe',
             'email'=>'johnDoe@mail.com',
             'job_title'=>'hr manager',
-            'password'=>Hash::make('secret'),
-            'owns_department'=>true
+            'role'=>UserRole::Manager->value
         ]);
 
         // \App\Models\User::factory()->create([
