@@ -4,8 +4,10 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Popover, Transition } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
+import myLinks from "../../Links";
+import LinkDropDown from "./Link.DropDown";
 
-function Profile() {
+function DropDown() {
     const { url, props } = usePage<PageProps>(),
         { full_name, current_department, role } = props.auth.user;
 
@@ -48,26 +50,17 @@ function Profile() {
                                     <h6 className="tw-text-xs tw-opacity-50">
                                         Manage settings
                                     </h6>
-                                    <Link
-                                        href={route("profile.edit")}
-                                        className={`tw-p-2 hover:tw-bg-slate-400 tw-rounded-md ${
-                                            url === "/profile"
-                                                ? "tw-bg-slate-400"
-                                                : ""
-                                        }`}
-                                    >
-                                        Profile
-                                    </Link>
-                                    <Link
-                                        href={route("department")}
-                                        className={`tw-p-2 hover:tw-bg-slate-400 tw-rounded-md ${
-                                            url === "/department"
-                                                ? "tw-bg-slate-400"
-                                                : ""
-                                        }`}
-                                    >
-                                        Department
-                                    </Link>
+                                    {myLinks.dropDownNav.map(
+                                        ({ to, textContent }, index) => {
+                                            return (
+                                                <LinkDropDown
+                                                    to={to}
+                                                    textContent={textContent}
+                                                    key={index}
+                                                />
+                                            );
+                                        }
+                                    )}
                                 </div>
                                 <Link
                                     href="/logout"
@@ -93,4 +86,4 @@ function Profile() {
     );
 }
 
-export default Profile;
+export default DropDown;
