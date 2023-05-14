@@ -2,29 +2,27 @@
 
 use App\Models\User;
 use App\Models\Departments;
+
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-test('profile page is displayed', function () {
-    $user = User::factory()->for(Departments::factory()->state([
+beforeEach(function () {
+    $this->user=User::factory()->for(Departments::factory()->state([
             'name'=>'hr'
-        ]), 'memberOf')->create();
+        ]))->create();
+});
 
+test('profile page is displayed', function () {
     $response = $this
-        ->actingAs($user)
+        ->actingAs($this->user)
         ->get('/profile');
 
     $response->assertOk();
 });
 
 test('profile information can be updated', function () {
-    $user = User::factory()->for(Departments::factory()->state([
-            'name'=>'hr'
-        ]), 'memberOf')->create();
-
-
     $response = $this
-        ->actingAs($user)
+        ->actingAs($this->user)
         ->patch('/profile', [
             'full_name' => 'Test User',
             'email' => 'test@example.com',
@@ -36,42 +34,33 @@ test('profile information can be updated', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect('/profile');
 
-    $user->refresh();
+    $this->user->refresh();
 
-    $this->assertSame('Test User', $user->full_name);
-    $this->assertSame('test@example.com', $user->email);
-    $this->assertNull($user->email_verified_at);
-    $this->assertNotNull($user->avatar);
+    $this->assertSame('Test User', $this->user->full_name);
+    $this->assertSame('test@example.com', $this->user->email);
+    $this->assertNull($this->user->email_verified_at);
+    $this->assertNotNull($this->user->avatar);
 
-    Storage::delete([$user->avatar]);
+    Storage::delete([$this->user->avatar]);
 });
 
 test('profile can be delete if not department manager', function () {
-    $user = User::factory()->state([
-        'password'=>'secret'
-    ])->for(Departments::factory()->state([
-            'name'=>'hr'
-        ]), 'memberOf')->create();
-
-
     $this
-        ->actingAs($user)
+        ->actingAs($this->user)
         ->delete('/profile', [
             'password'=>'secret',
-            'owns_department'=>$user->owns_department
+            'role'=>$this->user->role
         ]);
 
-    expect($user->fresh()->count())->toEqual(1);
+    expect($this->user->fresh()->count())->toEqual(1);
 });
 
 test('correct password must be provided before account can be deleted', function () {
-    $this->actingAs($user = User::factory()->for(Departments::factory()->state([
-            'name'=>'hr'
-        ]), 'memberOf')->create());
+    $this->actingAs($this->user);
 
-    $response = $this->delete('/user', [
+    $this->delete('/user', [
         'password' => 'wrong-password',
     ]);
 
-    expect($user->fresh())->not->toBeNull();
+    expect($this->user->fresh())->not->toBeNull();
 });
