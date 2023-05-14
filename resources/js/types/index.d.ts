@@ -9,7 +9,7 @@ export interface User {
     full_name: string;
     job_title: string;
     current_department: string;
-    owns_department: boolean;
+    role: "manager" | "member";
     phone_number: string;
     avatar: null | string | File;
 }
