@@ -6,12 +6,13 @@ import togglePasswordVisibility from "@/Utils/togglePasswordVisibility";
 import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import { PageProps } from "@/types";
+import handleTyping from "@/Handlers/handleTyping";
 
 export default function DestroyConfirmation({
     isOpen,
     setIsOpen,
 }: Omit<DialogBoxProps, "title">) {
-    const { owns_department } = usePage<PageProps>().props.auth.user,
+    const { role } = usePage<PageProps>().props.auth.user,
         {
             data,
             setData,
@@ -21,21 +22,11 @@ export default function DestroyConfirmation({
             processing,
         } = useForm({
             password: "",
-            owns_department: owns_department,
+            role: role,
         }),
         [passwordVisibility, setPasswordVisibility] = useState<"show" | "hide">(
             "hide"
         );
-
-    function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
-        const id = e.target.id as keyof typeof data;
-
-        if (errors[id]) {
-            clearErrors(id);
-        }
-
-        setData(id, e.target.value);
-    }
 
     function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
         evt.preventDefault();
@@ -69,7 +60,15 @@ export default function DestroyConfirmation({
                                     : "password"
                             }`}
                             id="password"
-                            onChange={handleTyping}
+                            onChange={(e) =>
+                                handleTyping(
+                                    e,
+                                    data,
+                                    errors,
+                                    clearErrors,
+                                    setData
+                                )
+                            }
                             value={data.password}
                             className="!tw-bg-transparent !tw-border-none focus:tw-ring-0 tw-flex-1"
                         />
@@ -96,7 +95,7 @@ export default function DestroyConfirmation({
                     </button>
                     <button
                         className="primaryBtn"
-                        disabled={processing || owns_department}
+                        disabled={processing || role === "manager"}
                     >
                         continue
                     </button>

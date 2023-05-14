@@ -6,14 +6,14 @@ import { usePage } from "@inertiajs/react";
 
 function DestroyAccount() {
     const [isOpen, setIsOpen] = useState(false),
-        { owns_department } = usePage<PageProps>().props.auth.user;
+        { role } = usePage<PageProps>().props.auth.user;
 
     return (
         <SettingSectionLayout
             title={"Delete Account"}
             description={"Permanently delete your account"}
         >
-            {owns_department ? (
+            {role === "manager" ? (
                 <span className="tw-font-bold tw-text-red-600">
                     NOTE: <br /> Delete account operation is not available to
                     managers. A manager's account can only be resigned to new

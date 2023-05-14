@@ -3,6 +3,7 @@ import SettingSectionLayout from "@/Layouts/SettingSection.Layout";
 import { useState } from "react";
 import togglePasswordVisibility from "@/Utils/togglePasswordVisibility";
 import { useForm } from "@inertiajs/react";
+import handleTyping from "@/Handlers/handleTyping";
 
 function UpdatePassword() {
     const [passwordVisibility, setPasswordVisibility] = useState<
@@ -27,16 +28,6 @@ function UpdatePassword() {
         });
     }
 
-    function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
-        const id = e.target.id as keyof typeof data;
-
-        if (errors[id]) {
-            clearErrors(id);
-        }
-
-        setData(id, e.target.value);
-    }
-
     return (
         <SettingSectionLayout
             title={"Security"}
@@ -58,7 +49,15 @@ function UpdatePassword() {
                             id="current_password"
                             autoComplete="current-password"
                             value={data.current_password}
-                            onChange={handleTyping}
+                            onChange={(e) =>
+                                handleTyping(
+                                    e,
+                                    data,
+                                    errors,
+                                    clearErrors,
+                                    setData
+                                )
+                            }
                         />
                     </FormInputsLayout>
 
@@ -76,7 +75,15 @@ function UpdatePassword() {
                             id="password"
                             autoComplete="new-password"
                             value={data.password}
-                            onChange={handleTyping}
+                            onChange={(e) =>
+                                handleTyping(
+                                    e,
+                                    data,
+                                    errors,
+                                    clearErrors,
+                                    setData
+                                )
+                            }
                         />
                     </FormInputsLayout>
 
@@ -94,7 +101,15 @@ function UpdatePassword() {
                             id="password_confirmation"
                             autoComplete="new-password"
                             value={data.password_confirmation}
-                            onChange={handleTyping}
+                            onChange={(e) =>
+                                handleTyping(
+                                    e,
+                                    data,
+                                    errors,
+                                    clearErrors,
+                                    setData
+                                )
+                            }
                         />
                     </FormInputsLayout>
 

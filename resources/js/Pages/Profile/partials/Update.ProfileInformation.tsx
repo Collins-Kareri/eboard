@@ -7,6 +7,7 @@ import { PageProps } from "@/types";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { router, useForm, usePage } from "@inertiajs/react";
 import { useRef, useState } from "react";
+import handleTyping from "@/Handlers/handleTyping";
 
 export default function EditProfileInformation({}) {
     const { full_name, email, avatar_url, avatar, phone_number } =
@@ -44,7 +45,7 @@ export default function EditProfileInformation({}) {
         setData("avatar", selectedAvatar);
     }
 
-    function destoryAvatar() {
+    function destroyAvatar() {
         if (newAvatarPreview) {
             setNewAvatarPreview(undefined);
             if (photoInputRef.current) {
@@ -55,19 +56,9 @@ export default function EditProfileInformation({}) {
         }
 
         //send a delete request to backend.
-        router.delete(route("avatar.destory"), {
+        router.delete(route("avatar.destroy"), {
             preserveScroll: true,
         });
-    }
-
-    function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
-        const id = e.target.id as keyof typeof data;
-
-        if (errors[id]) {
-            clearErrors(id);
-        }
-
-        setData(id, e.target.value);
     }
 
     return (
@@ -101,7 +92,7 @@ export default function EditProfileInformation({}) {
                                 size="lg"
                                 className="tertiaryBtn tw-px-4 tw-py-2"
                                 title="delete avatar"
-                                onClick={destoryAvatar}
+                                onClick={destroyAvatar}
                             />
                         ) : (
                             <></>
@@ -125,7 +116,9 @@ export default function EditProfileInformation({}) {
                         type="text"
                         id="full_name"
                         value={data.full_name}
-                        onChange={handleTyping}
+                        onChange={(e) =>
+                            handleTyping(e, data, errors, clearErrors, setData)
+                        }
                         required
                     />
                 </FormInputsLayout>
@@ -139,7 +132,9 @@ export default function EditProfileInformation({}) {
                         type="email"
                         id="email"
                         value={data.email}
-                        onChange={handleTyping}
+                        onChange={(e) =>
+                            handleTyping(e, data, errors, clearErrors, setData)
+                        }
                         required
                     />
                 </FormInputsLayout>
@@ -153,7 +148,9 @@ export default function EditProfileInformation({}) {
                         type="tel"
                         id="phone_number"
                         value={data.phone_number}
-                        onChange={handleTyping}
+                        onChange={(e) =>
+                            handleTyping(e, data, errors, clearErrors, setData)
+                        }
                         required
                     />
                 </FormInputsLayout>
