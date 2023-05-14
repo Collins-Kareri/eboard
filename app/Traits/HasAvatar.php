@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +13,6 @@ use Illuminate\Http\UploadedFile;
  */
 trait HasAvatar
 {
-    //todo updateAvatar,deleteAvatar,getAvatar,defaultUrl
     /**
      * Generate avatar name
      */
