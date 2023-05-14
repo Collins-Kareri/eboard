@@ -7,9 +7,8 @@ use App\Helpers\Calender;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\DepartmentInvitationController;
-use App\Http\Controllers\DepartmentMemberController;
+use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ProfileController;
-use App\Models\DepartmentInvitation;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,9 +83,9 @@ Route::middleware('auth:web')->group(function () {
         return redirect()->route('profile.update');
     })->name('avatar.destroy');
 
-    Route::get('/department', function () {
-        return Inertia::render('Department/Department');
-    })->name('department');
+    Route::controller(DepartmentsController::class)->group(function () {
+        Route::get('/department', 'index')->name('department');
+    });
 
     Route::controller(DepartmentInvitationController::class)->group(function () {
         Route::post('/department/member', 'store')->name('department.invite');
