@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class DepartmentInvitationController extends Controller
@@ -22,10 +23,20 @@ class DepartmentInvitationController extends Controller
             abort(403);
         }
 
+        // $allowedUserRoles=UserRole::Member->value.'|'.UserRole::Contractor->value;
+
         Validator::make($request->all(), [
             'email'=>['required','email','unique:users'],
-            'role'=>['required','string',new Enum(UserRole::class)]
-        ])->validateWithBag('addMember');
+            'role'=>['required','string',Rule::in([UserRole::Member->value,UserRole::Contractor->value])]
+        ], [
+            'email.unique'=>'User already exists'
+        ])->validateWithBag('invite');
+
+        Validator::make($request->all(), [
+            'email'=>['unique:department_invitations,email']
+        ], [
+            'email.unique'=>'Invitation already sent, please wait for 24 hours before sending another invitation or invalidate previous one to send  a new one.'
+        ])->validateWithBag('invite');
 
         $startTime=now();
 
