@@ -9,17 +9,17 @@ export default function DepartmentInvite({}) {
     const { role } = usePage<PageProps>().props.auth.user,
         { data, setData, errors, clearErrors, processing, post } = useForm<{
             email: string;
-            role: "member" | "manager";
+            role: "member" | "contractor";
         }>({
             email: "",
             role: "member",
         }),
-        roles: ["manager", "member"] = ["manager", "member"];
+        roles: ["member", "contractor"] = ["member", "contractor"];
 
-    function addMember(evt: React.FormEvent) {
+    function invite(evt: React.FormEvent) {
         evt.preventDefault();
         post(route("department.invite"), {
-            errorBag: "addMember",
+            errorBag: "invite",
             onStart: () => clearErrors(),
         });
     }
@@ -33,7 +33,7 @@ export default function DepartmentInvite({}) {
         >
             <form
                 className="tw-w-full tw-h-fit tw-flex tw-flex-col tw-gap-6"
-                onSubmit={addMember}
+                onSubmit={invite}
             >
                 <p className="tw-text-sm tw-font-light tw-opacity-60">
                     Please provide an email of the person you wish to become a
@@ -78,7 +78,7 @@ export default function DepartmentInvite({}) {
                                 description={
                                     role === "member"
                                         ? "Able to carry out operations on their own account"
-                                        : "Can carry out any operations in their department"
+                                        : "Temporary access to your department"
                                 }
                             />
                         ))}
@@ -90,7 +90,7 @@ export default function DepartmentInvite({}) {
                         className="primaryBtn"
                         disabled={processing || role === "member"}
                         type="button"
-                        onClick={addMember}
+                        onClick={invite}
                     >
                         invite
                     </button>
