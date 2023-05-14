@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Departments extends Model
 {
     use HasFactory;
+    use HasUlids;
 
     protected $fillable = [
         'name'
@@ -17,7 +19,7 @@ class Departments extends Model
     /**
      * Get user in departments
      */
-    public function members(): HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }

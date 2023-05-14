@@ -11,7 +11,8 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id');
+            $table->index('id');
             $table->string('name')->unique();
             $table->timestamps();
         });

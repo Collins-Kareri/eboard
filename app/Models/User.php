@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasAvatar;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class User extends Authenticatable
 {
@@ -18,6 +19,7 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
     use HasAvatar;
+    use HasUlids;
 
     /**
      * The attributes that are mass assignable.
@@ -29,10 +31,10 @@ class User extends Authenticatable
         'last_name',
         'phone_number',
         'email',
-        'avatar',
-        'password'
-        // 'job_title',
-        // 'owns_department'
+        'address',
+        'password',
+        'job_title',
+        'avatar'
     ];
 
     /**
@@ -44,9 +46,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'first_name',
-        'last_name',
-        'member_of_id',
-        'memberof'
+        'last_name'
     ];
 
     /**
@@ -55,8 +55,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'owns_department'=>'boolean'
+        'email_verified_at' => 'datetime'
     ];
 
     /**
@@ -71,7 +70,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Returns concated first_name and last_name columns.
+     * Returns connate of first_name and last_name columns.
      */
     public function fullName(): Attribute
     {
@@ -87,7 +86,7 @@ class User extends Authenticatable
     {
         return Attribute::get(
             function () {
-                return $this->memberof->name;
+                return $this->departments->name;
             }
         );
 
@@ -104,8 +103,16 @@ class User extends Authenticatable
     /**
      * Each user belongs to a single department.
      */
-    public function memberOf(): BelongsTo
+    public function departments(): BelongsTo
     {
         return $this->belongsTo(Departments::class);
+    }
+
+    /**
+     * Get the department invitations from user.
+     */
+    public function departmentInvitations(): HasMany
+    {
+        return $this->hasMany(DepartmentInvitation::class);
     }
 }
