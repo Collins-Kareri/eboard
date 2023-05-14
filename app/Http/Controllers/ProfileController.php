@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -70,7 +71,7 @@ class ProfileController extends Controller
     {
         Validator::make($request->all(), [
             'password' => ['required', 'current_password'],
-            'owns_department'=>['boolean','declined']
+            'role'=>['string',UserRole::Member->value]
         ], [
             'declined'=>'Delete account operation not available to department owners'
         ])->validateWithBag('deleteAccount');
