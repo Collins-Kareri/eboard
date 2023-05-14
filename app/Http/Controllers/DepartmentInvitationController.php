@@ -18,7 +18,7 @@ class DepartmentInvitationController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('addMember', $request->user())) {
+        if($request->user()->cannot('sendInvite', $request->user())) {
             abort(403);
         }
 
