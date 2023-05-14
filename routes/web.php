@@ -6,7 +6,10 @@ use Inertia\Inertia;
 use App\Helpers\Calender;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\DepartmentInvitationController;
+use App\Http\Controllers\DepartmentMemberController;
 use App\Http\Controllers\ProfileController;
+use App\Models\DepartmentInvitation;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,18 +22,32 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
+// TODO refactor routes to appropriate controllers.
+
 Route::middleware('guest')->group(function () {
     Route::controller(AuthenticatedSessionController::class)->group(function () {
         Route::get('login', 'create')->name('login.create');
         Route::post('login', 'store')->name('login.store');
-
     });
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-                    ->name('password.request');
+    // Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+    //                 ->name('password.request');
+
+
+    Route::get('register/{email}/{role}', function (Request $request, string $email, string $role) {
+        if(!$request->hasValidSignature()) {
+            abort(404);
+        }
+
+        return Inertia::render('Register', [
+            'email'=>$email,
+            'role'=>$role
+        ]);
+    })->name('register');
+
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:web')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Home');
     })->name('home');
@@ -65,21 +82,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/avatar', function (Request $request) {
         $request->user()->deleteAvatar();
         return redirect()->route('profile.update');
-    })->name('avatar.destory');
+    })->name('avatar.destroy');
+
+    Route::get('/department', function () {
+        return Inertia::render('Department/Department');
+    })->name('department');
+
+    Route::controller(DepartmentInvitationController::class)->group(function () {
+        Route::post('/department/member', 'store')->name('department.invite');
+    });
 
     Route::put('/password', [PasswordController::class,'update'])->name('password.update');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
-
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
-// require __DIR__.'/auth.php';
