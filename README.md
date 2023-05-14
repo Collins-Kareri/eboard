@@ -1,6 +1,6 @@
 # EBOARD
 
-## Intialization
+## Initialization
 
 Clone the repository. Then run:
 
@@ -15,7 +15,7 @@ docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/htm
 Afterwards, create a .env file and copy the contents of .env.example file inside it. Then run:
 
 ```bash
-# Note: This assumes you've created a sail aliases on your machine if you haven't you can 
+# Note: This assumes you've created a sail aliases on your machine if you haven't you can
 # use ./vendor/bin/sail or create a sail alias.
 # Please refer to laravel sail documentation for instructions on how to do this.
 
