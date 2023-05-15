@@ -1,8 +1,8 @@
-interface DataType {
-    [key: string]: string | null | File | number | boolean;
+export interface DataType {
+    [key: string]: string | null | File | number | boolean | Date | unknown;
 }
 
-interface ErrorType {
+export interface ErrorType {
     [key: string]: string | undefined;
 }
 
@@ -11,7 +11,7 @@ export default function handleTyping<clearErrorsType>(
     data: DataType,
     errors: ErrorType,
     clearErrors: (...fields: clearErrorsType[]) => void,
-    setData: (id: keyof typeof data, value: string) => void
+    setData: (id: keyof DataType, value: string) => void
 ) {
     const id = e.target.id as keyof typeof data;
 
