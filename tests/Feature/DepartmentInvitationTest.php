@@ -29,8 +29,8 @@ test('Can only send invite if manager', function () {
     $this->user->save();
 
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
-        'email'=>$this->user->email,
-        'role'=>$this->user->role
+        'email'=>$this->inviteeEmail,
+        'role'=>UserRole::Member->value
     ]);
 
     $response->assertStatus(403);
