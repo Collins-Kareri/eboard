@@ -5,9 +5,33 @@ namespace App\Helpers;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
 
 class Calender
 {
+    /**
+     * Add time period to start time to get end date
+     */
+    public static function endDate(Carbon $startTime, string $timePeriod)
+    {
+        preg_match('/^(\d+)\s+(.*)$/', $timePeriod, $matches);
+
+        list($_, $number, $unit)=$matches;
+        $startTime=Carbon::createFromTimestampUTC($startTime);
+
+        switch(Str::lower($unit)) {
+            case 'day':
+                return $startTime->addDays($number)->utc();
+            case 'week':
+                return $startTime->addWeeks($number)->utc();
+            case 'month':
+                return $startTime->addMonths($number)->utc();
+            case 'year':
+                return $startTime->addYears($number)->utc();
+        }
+    }
+
     /**
      * Generate month names
      */
