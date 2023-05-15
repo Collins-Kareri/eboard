@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\UserRole;
+use App\Helpers\EmployeeID;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,9 +14,10 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasAvatar;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -34,7 +38,8 @@ class User extends Authenticatable
         'address',
         'password',
         'job_title',
-        'avatar'
+        'avatar',
+        'role'
     ];
 
     /**
@@ -76,6 +81,22 @@ class User extends Authenticatable
     {
         return Attribute::make(
             get:fn () =>ucfirst($this->first_name).' '.ucfirst($this->last_name)
+        );
+    }
+
+    /**
+     * Set automatic generations of employee id
+     */
+    public function employeeID(): Attribute
+    {
+        return Attribute::make(
+            set:function () {
+                if($this->role !== UserRole::Contractor->value) {
+                    return EmployeeID::generate();
+                } else {
+                    return EmployeeID::contractorId();
+                }
+            }
         );
     }
 
