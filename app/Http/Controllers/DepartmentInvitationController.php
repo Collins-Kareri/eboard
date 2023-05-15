@@ -20,10 +20,10 @@ class DepartmentInvitationController extends Controller
     public function store(Request $request)
     {
         if($request->user()->cannot('sendInvite', $request->user())) {
+            $startTime=now();
+
             abort(403);
         }
-
-        // $allowedUserRoles=UserRole::Member->value.'|'.UserRole::Contractor->value;
 
         Validator::make($request->all(), [
             'email'=>['required','email','unique:users'],
@@ -40,7 +40,7 @@ class DepartmentInvitationController extends Controller
 
         $startTime=now();
 
-        $signedUrl=URL::temporarySignedRoute('register', $startTime->addHours(24), [
+        $signedUrl=URL::temporarySignedRoute('register.create', $startTime->addHours(24), [
             'email'=>$request->input('email'),
             'role'=>$request->input('role')
         ]);
