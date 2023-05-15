@@ -20,9 +20,11 @@ return new class () extends Migration {
             $table->string('job_title');
             $table->string('avatar')->nullable();
             $table->string('email')->unique();
-            $table->string('employeeID');
+            $table->string('employeeID')->default('');
             $table->string('phone_number')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('contract_start_date')->nullable();
+            $table->timestamp('contract_end_date')->nullable();
             $table->string('password');
             $table->enum('role', array_column(UserRole::cases(), 'value'));
             $table->rememberToken();
