@@ -13,7 +13,7 @@ function Register({ email, role }: { email: string; role: boolean }) {
             first_name: "",
             last_name: "",
             email: email,
-            phone: "",
+            phone_number: "",
             job_title: "",
             address: "",
             password: "",
@@ -101,12 +101,12 @@ function Register({ email, role }: { email: string; role: boolean }) {
                 <div className="tw-flex tw-items-center tw-gap-6">
                     <FormInputsLayout
                         labelText={"phone number"}
-                        htmlFor="phone"
-                        errors={errors.phone}
+                        htmlFor="phone_number"
+                        errors={errors.phone_number}
                     >
                         <input
                             type="tel"
-                            id="phone"
+                            id="phone_number"
                             onChange={(e) =>
                                 handleTyping(
                                     e,
@@ -116,7 +116,7 @@ function Register({ email, role }: { email: string; role: boolean }) {
                                     setData
                                 )
                             }
-                            value={data.phone}
+                            value={data.phone_number}
                         />
                     </FormInputsLayout>
                     <FormInputsLayout
@@ -146,7 +146,7 @@ function Register({ email, role }: { email: string; role: boolean }) {
                     htmlFor="password"
                     errors={errors.password}
                 >
-                    <section className="tw-flex tw-items-center tw-w-full tw-border tw-border-slate-950 tw-rounded-md focus-within:!tw-ring focus-within:!tw-ring-slate-950 tw-bg-slate-950">
+                    <section className="tw-flex tw-items-center tw-w-full tw-border tw-border-slate-950 tw-rounded-md tw-bg-slate-950">
                         <input
                             type={`${
                                 passwordVisibility === "show"
@@ -154,7 +154,8 @@ function Register({ email, role }: { email: string; role: boolean }) {
                                     : "password"
                             }`}
                             id="password"
-                            className="!tw-bg-transparent !tw-border-none focus:tw-ring-0 tw-flex-1"
+                            name="password"
+                            className="!tw-bg-transparent !tw-border-none tw-flex-1 focus:tw-ring-0"
                             onChange={(e) =>
                                 handleTyping(
                                     e,
@@ -165,7 +166,9 @@ function Register({ email, role }: { email: string; role: boolean }) {
                                 )
                             }
                             value={data.password}
-                            autoComplete="off"
+                            autoComplete="new-password"
+                            required
+                            placeholder="password"
                         />
                         <span
                             className="tw-px-2 tw-py-1 tw-h-full tw-block tw-cursor-pointer hover:tw-bg-slate-900 tw-mr-2 tw-rounded-md"
