@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\DepartmentInvitationController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,18 +33,11 @@ Route::middleware('guest')->group(function () {
     // Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
     //                 ->name('password.request');
 
+    Route::controller(RegisterController::class)->group(function () {
+        Route::get('/register/{email?}/{role?}', 'create')->name('register.create');
 
-    Route::get('register/{email}/{role}', function (Request $request, string $email, string $role) {
-        if(!$request->hasValidSignature()) {
-            abort(404);
-        }
-
-        return Inertia::render('Register', [
-            'email'=>$email,
-            'role'=>$role
-        ]);
-    })->name('register');
-
+        Route::post('/register', 'store')->name('register.store');
+    });
 });
 
 Route::middleware('auth:web')->group(function () {
