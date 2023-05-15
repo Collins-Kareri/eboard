@@ -4,16 +4,24 @@ import FormInputsLayout from "@/Layouts/FormInputs.Layout";
 import { PageProps } from "@/types";
 import RoleSelector from "@/Components/RoleSelector";
 import handleTyping from "@/Handlers/handleTyping";
+import ContractDetails from "@/Pages/Department/Features/ContractDetails";
+
+interface FormProps extends Record<string, unknown> {
+    email: string;
+    role: "member" | "contractor";
+    start_time?: Date;
+    contract_period?: string;
+}
 
 export default function DepartmentInvite({}) {
     const { role } = usePage<PageProps>().props.auth.user,
-        { data, setData, errors, clearErrors, processing, post } = useForm<{
-            email: string;
-            role: "member" | "contractor";
-        }>({
-            email: "",
-            role: "member",
-        }),
+        { data, setData, errors, clearErrors, processing, post } =
+            useForm<FormProps>({
+                email: "",
+                role: "contractor",
+                start_time: undefined,
+                contract_period: undefined,
+            }),
         roles: ["member", "contractor"] = ["member", "contractor"];
 
     function invite(evt: React.FormEvent) {
@@ -60,6 +68,16 @@ export default function DepartmentInvite({}) {
                     />
                 </FormInputsLayout>
 
+                {data.role === "contractor" ? (
+                    <ContractDetails
+                        data={data}
+                        errors={errors}
+                        clearErrors={clearErrors}
+                        setData={setData}
+                    />
+                ) : (
+                    <></>
+                )}
                 <div className="tw-flex tw-flex-col tw-gap-4">
                     <h1 className="tw-text-lg tw-capitalize">role</h1>
                     {errors.role ? (
