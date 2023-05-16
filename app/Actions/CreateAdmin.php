@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Enums\UserRole;
 use App\Models\Departments;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
@@ -46,6 +47,8 @@ class CreateAdmin
         ]);
 
         $user->save();
+
+        event(new Registered($user));
 
         Auth::login($user);
 
