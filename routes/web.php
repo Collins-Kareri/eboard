@@ -5,13 +5,17 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Helpers\Calender;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DepartmentInvitationController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,51 +60,62 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth:web')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Home');
-    })->name('home');
-
-    Route::get('/tasks', function () {
-        return Inertia::render('Tasks');
-    })->name('tasks');
-
-    Route::prefix('/calender')->group(function () {
+    Route::middleware('verified')->group(function () {
         Route::get('/', function () {
-            return response()->json([
-                'daysAbbr'=>Calender::dayAbbreviations(),
-                'monthNames'=>Calender::monthNames()
-            ]);
+            return Inertia::render('Home');
+        })->name('home');
+
+        Route::get('/tasks', function () {
+            return Inertia::render('Tasks');
+        })->name('tasks');
+
+        Route::prefix('/calender')->group(function () {
+            Route::get('/', function () {
+                return response()->json([
+                    'daysAbbr'=>Calender::dayAbbreviations(),
+                    'monthNames'=>Calender::monthNames()
+                ]);
+            });
+
+            Route::get('/{year}', function (int $year) {
+                return response()->json(Calender::buildMonths($year));
+            });
+        })->name('calender');
+
+        Route::get('/employees', function () {
+            return Inertia::render('Employees');
+        })->name('employees');
+
+        Route::controller(ProfileController::class)->group(function () {
+            Route::get('/profile', 'edit')->name('profile.edit');
+            Route::patch('/profile', 'update')->name('profile.update');
+            Route::delete('/profile', 'destroy')->name('profile.destroy');
         });
 
-        Route::get('/{year}', function (int $year) {
-            return response()->json(Calender::buildMonths($year));
+        Route::delete('/avatar', function (Request $request) {
+            $request->user()->deleteAvatar();
+            return redirect()->route('profile.update');
+        })->name('avatar.destroy');
+
+        Route::controller(DepartmentsController::class)->group(function () {
+            Route::get('/department', 'index')->name('department');
         });
-    })->name('calender');
 
-    Route::get('/employees', function () {
-        return Inertia::render('Employees');
-    })->name('employees');
+        Route::controller(DepartmentInvitationController::class)->group(function () {
+            Route::post('/department/member', 'store')->name('department.invite');
+        });
 
-    Route::controller(ProfileController::class)->group(function () {
-        Route::get('/profile', 'edit')->name('profile.edit');
-        Route::patch('/profile', 'update')->name('profile.update');
-        Route::delete('/profile', 'destroy')->name('profile.destroy');
+        Route::put('/password', [PasswordController::class,'update'])->name('password.update');
+
     });
 
-    Route::delete('/avatar', function (Request $request) {
-        $request->user()->deleteAvatar();
-        return redirect()->route('profile.update');
-    })->name('avatar.destroy');
+    Route::get('/email/verify', EmailVerificationPromptController::class)->name('verification.notice');
 
-    Route::controller(DepartmentsController::class)->group(function () {
-        Route::get('/department', 'index')->name('department');
-    });
 
-    Route::controller(DepartmentInvitationController::class)->group(function () {
-        Route::post('/department/member', 'store')->name('department.invite');
-    });
+    Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)->middleware(['signed'])->name('verification.verify');
 
-    Route::put('/password', [PasswordController::class,'update'])->name('password.update');
+
+    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class,'store'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
