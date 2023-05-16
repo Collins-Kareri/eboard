@@ -26,7 +26,9 @@ class DepartmentInvitationController extends Controller
 
         Validator::make($request->all(), [
             'email'=>['required','email','unique:users'],
-            'role'=>['required','string',Rule::in([UserRole::Member->value,UserRole::Contractor->value])]
+            'role'=>['required','string',Rule::in([UserRole::Member->value,UserRole::Contractor->value])],
+            'start_time'=>[Rule::requiredIf($request->role===UserRole::Contractor->value),Rule::excludeIf($request->role!==UserRole::Contractor->value),'date'],
+            'contract_period'=>[Rule::requiredIf($request->role===UserRole::Contractor->value),Rule::excludeIf($request->role!==UserRole::Contractor->value),'regex:/^\d+\s+(?:day|month|week|year)$/']
         ], [
             'email.unique'=>'User already exists'
         ])->validateWithBag('invite');
