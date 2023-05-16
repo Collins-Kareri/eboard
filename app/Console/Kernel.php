@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('model:prune', [
             '--model'=>[DepartmentInvite::class],
         ])->daily();
+        $schedule->command('auth:clear-resets')->everyFifteenMinutes();
     }
 
     /**
