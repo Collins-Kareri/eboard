@@ -21,7 +21,7 @@ class RegisterController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request, string $email, string $role)
+    public function create(Request $request, string $email='', string $role='')
     {
         if(User::count()<=0) {
             return Inertia::render('Register', [
