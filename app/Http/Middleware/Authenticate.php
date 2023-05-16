@@ -14,7 +14,7 @@ class Authenticate extends Middleware
     protected function redirectTo(Request $request): ?string
     {
         if(User::count()<=0) {
-            return $request->expectsJson() ? null : route('registration.create');
+            return $request->expectsJson() ? null : route('register.create');
 
         }
 
