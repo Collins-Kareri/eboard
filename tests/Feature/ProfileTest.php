@@ -2,8 +2,12 @@
 
 use App\Models\User;
 use App\Models\Departments;
-
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
@@ -18,6 +22,23 @@ it('profile page is displayed', function () {
         ->get('/profile');
 
     $response->assertOk();
+});
+
+it('requests for verification on email change', function () {
+    Notification::fake();
+    $response = $this
+            ->actingAs($this->user)
+            ->patch('/profile', [
+                'full_name' => 'Test User',
+                'email' => fake()->email(),
+                'avatar'=>UploadedFile::fake()->image('test.jpg'),
+                'phone_number'=>'+25412345678'
+            ]);
+
+    $response->assertRedirect();
+    $this->user->refresh();
+    expect($this->user->hasVerifiedEmail())->toBeFalse();
+    Notification::assertSentTo($this->user, VerifyEmail::class);
 });
 
 it('profile information can be updated', function () {
