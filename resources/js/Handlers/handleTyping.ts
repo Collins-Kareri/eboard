@@ -1,3 +1,5 @@
+import convertToUTC from "@/Utils/convertToUTC";
+
 export interface DataType {
     [key: string]: string | null | File | number | boolean | Date | unknown;
 }
@@ -14,10 +16,15 @@ export default function handleTyping<clearErrorsType>(
     setData: (id: keyof DataType, value: string) => void
 ) {
     const id = e.target.id as keyof typeof data;
+    let value = e.target.value;
 
     if (errors[id]) {
         clearErrors(id as clearErrorsType);
     }
 
-    setData(id, e.target.value);
+    if (e.target.type === "date") {
+        value = `${convertToUTC(value as unknown as Date)}`;
+    }
+
+    setData(id, value);
 }
