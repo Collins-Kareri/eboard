@@ -12,7 +12,7 @@ beforeEach(function () {
         ]))->create();
 });
 
-test('profile page is displayed', function () {
+it('profile page is displayed', function () {
     $response = $this
         ->actingAs($this->user)
         ->get('/profile');
@@ -20,7 +20,7 @@ test('profile page is displayed', function () {
     $response->assertOk();
 });
 
-test('profile information can be updated', function () {
+it('profile information can be updated', function () {
     $response = $this
         ->actingAs($this->user)
         ->patch('/profile', [
@@ -44,7 +44,7 @@ test('profile information can be updated', function () {
     Storage::delete([$this->user->avatar]);
 });
 
-test('profile can be delete if not department manager', function () {
+it('profile can be delete if not department manager', function () {
     $this
         ->actingAs($this->user)
         ->delete('/profile', [
@@ -55,7 +55,7 @@ test('profile can be delete if not department manager', function () {
     expect($this->user->fresh()->count())->toEqual(1);
 });
 
-test('correct password must be provided before account can be deleted', function () {
+it('correct password must be provided before account can be deleted', function () {
     $this->actingAs($this->user);
 
     $this->delete('/user', [
