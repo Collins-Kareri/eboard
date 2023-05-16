@@ -20,7 +20,7 @@ return new class () extends Migration {
             $table->string('job_title');
             $table->string('avatar')->nullable();
             $table->string('email')->unique();
-            $table->string('employeeID')->default('');
+            $table->string('employeeID')->unique();
             $table->string('phone_number')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('contract_start_date')->nullable();

@@ -45,6 +45,7 @@ class RegisterController extends Controller
      */
     public function store(Request $request)
     {
+
         if(User::count()>=1) {
             Validator::make($request->all(), [
                 'email'=>['exists:department_invitations,email']
@@ -64,12 +65,13 @@ class RegisterController extends Controller
             'last_name'=>['required'],
             'job_title'=>['required'],
             'phone_number'=>['required'],
-            'password'=>['required',Rules\Password::defaults()],
+            'password'=>['required',Rules\Password::min(8)->mixedCase()->numbers()->symbols()->letters()],
             'contract_start_date'=>[Rule::requiredIf($request->role===UserRole::Contractor->value)],
-            'contract_end_date'=>[Rule::requiredIf($request->role==UserRole::Contractor->value)]
+            'contract_end_date'=>[Rule::requiredIf($request->role==UserRole::Contractor->value)],
+            'department_name'=>['required','string','exists:departments,name']
         ]);
 
-        $department=Departments::find($request->department_id);
+        $department=Departments::where('name', '=', $request->department_name)->first();
 
         $user=new User();
 
@@ -82,7 +84,8 @@ class RegisterController extends Controller
             'job_title'=>$request->job_title,
             'phone_number'=>$request->phone_number,
             'password'=>Hash::make($request->password),
-            'role'=>$request->role
+            'role'=>$request->role,
+            'employeeID'=>''
         ]);
 
         if($request->role===UserRole::Contractor->value) {
