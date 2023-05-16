@@ -26,7 +26,7 @@ class CreateAdmin
             'last_name'=>['required'],
             'job_title'=>['required'],
             'phone_number'=>['required'],
-            'password'=>['required',Password::min(8)->mixedCase()->numbers()->symbols()->letterS()]
+            'password'=>['required',Password::min(8)->mixedCase()->numbers()->symbols()->letters()]
         ]);
 
         $department=static::createHrDepartment();
@@ -41,7 +41,8 @@ class CreateAdmin
             'job_title'=>$request->job_title,
             'phone_number'=>$request->phone_number,
             'password'=>Hash::make($request->password),
-            'role'=>UserRole::Manager->value
+            'role'=>UserRole::Manager->value,
+            'employeeID'=>''
         ]);
 
         $user->save();
