@@ -14,16 +14,16 @@ beforeEach(function () {
     $this->defaultPassword="s£cReT123";
 });
 
-it('Redirects to register page if no admin is available', function () {
+test('Redirects to register page if no admin is available', function () {
     $response=$this->get(route('home'));
     $response->assertRedirectToRoute('register.create');
 });
 
-it('Can register a new admin who is the manager of hr department', function (string $email, string $role) {
+test('Can register a new admin who is the manager of hr department', function (string $email, string $role) {
     $response=$this->post(route('register.store'), [
         'first_name'=>fake()->firstName(),
         'last_name'=>fake()->lastName(),
-        'job_title'=>fake()->jobTitle(),
+        'job_ttestle'=>fake()->jobTtestle(),
         'email'=>$email,
         'phone_number'=>fake()->phoneNumber(),
         'password'=>$this->defaultPassword,
@@ -45,7 +45,7 @@ it('Can register a new admin who is the manager of hr department', function (str
     'manager'=>[fake()->email(),UserRole::Manager->value]
 ]);
 
-it('cannot register user without invitation', function (string $email, string $role, $contractStart=null, $contractPeriod=null) {
+test('cannot register user without invitation', function (string $email, string $role, $contractStart=null, $contractPeriod=null) {
     User::factory()->state([
         'role'=>UserRole::Manager->value
     ])->for($this->department)->create();
@@ -72,7 +72,7 @@ it('cannot register user without invitation', function (string $email, string $r
     $response->assertInvalid(['email'=>'not found']);
 })->with('userdata');
 
-it('user is registered and logged in only if invitation is sent', function (string $email, string $role, $contractStart=null, $contractPeriod=null) {
+test('user is registered and logged in only if invitation is sent', function (string $email, string $role, $contractStart=null, $contractPeriod=null) {
 
     $user=User::factory()->state([
         'role'=>UserRole::Manager->value

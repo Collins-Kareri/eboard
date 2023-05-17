@@ -13,13 +13,13 @@ beforeEach(function () {
     ])->for($this->departments)->create();
 });
 
-it('redirects to login if unauthenticated', function () {
+test('redirects to login if unauthenticated', function () {
     $response=$this->get(RouteServiceProvider::HOME);
 
     $response->assertRedirect(route('login.create'));
 });
 
-it("Fails login with wrong credentials", function (string $email, string $password) {
+test("Fails login wtesth wrong credentials", function (string $email, string $password) {
     $response=$this->post(route('login.store'), [
         'email'=>$email,
         'password'=>$password
@@ -32,7 +32,7 @@ it("Fails login with wrong credentials", function (string $email, string $passwo
 ]);
 
 
-it('Logs in user', function () {
+test('Logs in user', function () {
     $response=$this->post(route('login.store'), [
         'email'=>$this->user->email,
         'password'=>'s£cReT123'

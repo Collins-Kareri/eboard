@@ -20,7 +20,7 @@ beforeEach(function () {
     $this->startTime=now();
 });
 
-it('Can only send invite if manager', function () {
+test('Can only send invite if manager', function () {
     $this->user->role=UserRole::Member->value;
     $this->user->save();
 
@@ -36,7 +36,7 @@ it('Can only send invite if manager', function () {
 
 });
 
-it('Manager can invite new members', function () {
+test('Manager can invite new members', function () {
 
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
@@ -46,7 +46,7 @@ it('Manager can invite new members', function () {
     $response->assertRedirect();
 });
 
-it('Invitation is stored', function () {
+test('Invitation is stored', function () {
     $this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
         'role'=>UserRole::Member->value
@@ -60,7 +60,7 @@ it('Invitation is stored', function () {
 });
 
 
-it('Fails to send invite if email is already sent', function () {
+test('Fails to send invite if email is already sent', function () {
     $this->user->departmentInvitations()->create([
         'email'=>$this->inviteeEmail
     ]);
@@ -81,7 +81,7 @@ it('Fails to send invite if email is already sent', function () {
     ]);
 });
 
-it('mail is sent to invitee', function () {
+test('mail is sent to invitee', function () {
     Event::fake();
 
     $this->actingAs($this->user)->post(route('department.invite'), [
@@ -96,7 +96,7 @@ it('mail is sent to invitee', function () {
     });
 });
 
-it('sends invites to members and contractors', function (string $email, string $role, $start_time=null, $contract_period=null) {
+test('sends invites to members and contractors', function (string $email, string $role, $start_time=null, $contract_period=null) {
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$email,
         'role'=>$role,
@@ -110,7 +110,7 @@ it('sends invites to members and contractors', function (string $email, string $
     'contractor'=>[fake()->email(),UserRole::Contractor->value,Carbon::now('utc'),'6 day']
 ]);
 
-it('fails to invite contractors if wrong values are provided contract details', function (string $email, string $role, $start_time=null, $contract_period=null) {
+test('fails to invite contractors if wrong values are provided contract details', function (string $email, string $role, $start_time=null, $contract_period=null) {
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$email,
         'role'=>$role,

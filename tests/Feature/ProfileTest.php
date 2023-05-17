@@ -16,7 +16,7 @@ beforeEach(function () {
         ]))->create();
 });
 
-it('profile page is displayed', function () {
+test('profile page is displayed', function () {
     $response = $this
         ->actingAs($this->user)
         ->get('/profile');
@@ -24,7 +24,7 @@ it('profile page is displayed', function () {
     $response->assertOk();
 });
 
-it('requests for verification on email change', function () {
+test('requests for verification on email change', function () {
     Notification::fake();
     $response = $this
             ->actingAs($this->user)
@@ -41,7 +41,7 @@ it('requests for verification on email change', function () {
     Notification::assertSentTo($this->user, VerifyEmail::class);
 });
 
-it('fails update on wrong data', function (string $full_name=null, string $email, $avatar=null, string $phone_number) {
+test('fails update on wrong data', function (string $full_name=null, string $email, $avatar=null, string $phone_number) {
     $response = $this
         ->actingAs($this->user)
         ->patch('/profile', [
@@ -59,7 +59,7 @@ it('fails update on wrong data', function (string $full_name=null, string $email
     'invalid phone number'=>[fake()->name(),'due',UploadedFile::fake()->image('test.avif'),'+'.fake()->phoneNumber().'d']
 ]);
 
-it('profile information can be updated', function () {
+test('profile information can be updated', function () {
     $response = $this
         ->actingAs($this->user)
         ->patch('/profile', [
@@ -83,7 +83,7 @@ it('profile information can be updated', function () {
     Storage::delete([$this->user->avatar]);
 });
 
-it('profile can be deleted if not department manager', function () {
+test('profile can be deleted if not department manager', function () {
     $this
         ->actingAs($this->user)
         ->delete('/profile', [
@@ -94,7 +94,7 @@ it('profile can be deleted if not department manager', function () {
     expect($this->user->fresh()->count())->toEqual(1);
 });
 
-it('correct password must be provided before account can be deleted', function () {
+test('correct password must be provided before account can be deleted', function () {
     $this->actingAs($this->user);
 
     $this->delete('/user', [

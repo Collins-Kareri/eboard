@@ -12,13 +12,13 @@ beforeEach(function () {
     $this->user = User::factory()->for($department)->create();
 });
 
-it('reset password link screen can be rendered', function () {
+test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
 
     $response->assertStatus(200);
 });
 
-it('reset password link can be requested', function () {
+test('reset password link can be requested', function () {
     Notification::fake();
 
     $this->post('/forgot-password', ['email' => $this->user->email]);
@@ -26,7 +26,7 @@ it('reset password link can be requested', function () {
     Notification::assertSentTo($this->user, ResetPassword::class);
 });
 
-it('reset password screen can be rendered', function () {
+test('reset password screen can be rendered', function () {
     Notification::fake();
 
     $this->post('/forgot-password', ['email' => $this->user->email]);
@@ -40,7 +40,7 @@ it('reset password screen can be rendered', function () {
     });
 });
 
-it('password can be reset with valid token', function () {
+test('password can be reset with valid token', function () {
     Notification::fake();
 
     $user = $this->user;
