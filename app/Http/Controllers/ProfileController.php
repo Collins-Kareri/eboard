@@ -32,14 +32,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $input=$request->all();
-
-        Validator::make($input, [
-            'email'=>['required','email','max:255'],
-            'full_name'=>['required','string','max:255'],
-            'avatar'=>['nullable', 'mimes:jpg,jpeg,png'],
-            'phone_number'=>['required','regex:/^\+[0-9]+$/']
-        ])->validateWithBag('updateProfileInformation');
+        $input=$request->validated();
 
         $names=Str::of($input['full_name'])->explode(" ");
 
