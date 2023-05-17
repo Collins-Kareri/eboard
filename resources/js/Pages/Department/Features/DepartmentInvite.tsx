@@ -103,7 +103,7 @@ export default function DepartmentInvite({}) {
                     </section>
                 </div>
 
-                <div className="tw-w-full tw-border-t tw-border-slate-50 tw-flex tw-justify-end tw-py-4">
+                <div className="tw-w-full tw-border-t tw-border-slate-50 tw-flex tw-justify-start tw-py-4">
                     <button
                         className="primaryBtn"
                         disabled={processing || role === "member"}

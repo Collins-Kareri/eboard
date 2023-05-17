@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserRole;
 use App\Events\DepartmentInviteSent;
 use App\Mail\DepartmentInvite;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -18,11 +19,7 @@ class DepartmentInvitationController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('sendInvite', $request->user())) {
-            $startTime=now();
-
-            abort(403);
-        }
+        $this->authorize('sendInvite', User::class);
 
         Validator::make($request->all(), [
             'email'=>['required','email','unique:users'],
@@ -39,19 +36,7 @@ class DepartmentInvitationController extends Controller
             'email.unique'=>'Invitation already sent, please wait for 24 hours before sending another invitation or invalidate previous one to send  a new one.'
         ])->validateWithBag('invite');
 
-        $startTime=now();
-
-        $signedUrl=URL::temporarySignedRoute('register.create', $startTime->addHours(24), [
-            'email'=>$request->input('email'),
-            'role'=>$request->input('role')
-        ]);
-        $department=$request->user()->current_department;
-
-        Mail::mailer('smtp')->to($request->input('email'))->send(
-            new DepartmentInvite($signedUrl, $department)
-        );
-
-        DepartmentInviteSent::dispatch($request->input('email'), $request->user());
+        $request->user()->sendInvite($request->input('email'), $request->input('role'), $request->user()->current_department, 'register.store');
 
         return back();
     }

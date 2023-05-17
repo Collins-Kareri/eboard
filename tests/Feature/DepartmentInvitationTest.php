@@ -33,11 +33,9 @@ test('Can only send invite if manager', function () {
 
     $this->user->role=UserRole::Manager->value;
     $this->user->save();
-
 });
 
 test('Manager can invite new members', function () {
-
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
         'role'=>UserRole::Member->value
@@ -58,7 +56,6 @@ test('Invitation is stored', function () {
         'status'=>InviteStatus::Pending->value
     ]);
 });
-
 
 test('Fails to send invite if email is already sent', function () {
     $this->user->departmentInvitations()->create([

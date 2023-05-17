@@ -13,9 +13,9 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DepartmentInvitationController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\OnBoardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +41,12 @@ Route::middleware('guest')->group(function () {
     Route::controller(PasswordResetLinkController::class)->group(function () {
         Route::get('forgot-password', 'create')->name('password.request');
         Route::post('forgot-password', 'store')->name('password.request.email');
+    });
+
+
+    Route::controller(OnBoardingController::class)->group(function () {
+        Route::get('/onboard/{email?}/{role?}/{department?}', 'create')->name('onboard.create');
+        Route::post('/onboard', 'store')->name('onboard.store');
     });
 
     // password reset
@@ -99,6 +105,7 @@ Route::middleware('auth:web')->group(function () {
 
         Route::controller(DepartmentsController::class)->group(function () {
             Route::get('/department', 'index')->name('department');
+            Route::post('/department', 'store')->name('department.store');
         });
 
         Route::controller(DepartmentInvitationController::class)->group(function () {
@@ -106,14 +113,11 @@ Route::middleware('auth:web')->group(function () {
         });
 
         Route::put('/password', [PasswordController::class,'update'])->name('password.update');
-
     });
 
     Route::get('/email/verify', EmailVerificationPromptController::class)->name('verification.notice');
 
-
     Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)->middleware(['signed'])->name('verification.verify');
-
 
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class,'store'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 

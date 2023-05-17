@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Enums\UserRole;
 use App\Helpers\EmployeeID;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,6 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasAvatar;
+use App\Traits\UserInvite;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
@@ -24,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use HasAvatar;
     use HasUlids;
+    use UserInvite;
 
     /**
      * The attributes that are mass assignable.
