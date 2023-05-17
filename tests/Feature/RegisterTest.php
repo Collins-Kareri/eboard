@@ -23,7 +23,7 @@ test('Can register a new admin who is the manager of hr department', function (s
     $response=$this->post(route('register.store'), [
         'first_name'=>fake()->firstName(),
         'last_name'=>fake()->lastName(),
-        'job_ttestle'=>fake()->jobTtestle(),
+        'job_title'=>fake()->jobTitle(),
         'email'=>$email,
         'phone_number'=>fake()->phoneNumber(),
         'password'=>$this->defaultPassword,
