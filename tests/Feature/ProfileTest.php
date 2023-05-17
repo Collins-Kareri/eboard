@@ -41,6 +41,24 @@ it('requests for verification on email change', function () {
     Notification::assertSentTo($this->user, VerifyEmail::class);
 });
 
+it('fails update on wrong data', function (string $full_name=null, string $email, $avatar=null, string $phone_number) {
+    $response = $this
+        ->actingAs($this->user)
+        ->patch('/profile', [
+            'full_name' => $full_name,
+            'email' => $email,
+            'avatar'=>$avatar,
+            'phone_number'=>$phone_number
+        ]);
+
+    $response->assertSessionHasErrorsIn('updateProfileInformation');
+})->with([
+    'missing full name'=>[null,fake()->email(),null,'+'.fake()->phoneNumber()],
+    'invalid email'=>[fake()->name(),'due',null,'+'.fake()->phoneNumber()],
+    'invalid avatar'=>[fake()->name(),'due',UploadedFile::fake()->image('test.avif'),'+'.fake()->phoneNumber()],
+    'invalid phone number'=>[fake()->name(),'due',UploadedFile::fake()->image('test.avif'),'+'.fake()->phoneNumber().'d']
+]);
+
 it('profile information can be updated', function () {
     $response = $this
         ->actingAs($this->user)
@@ -65,7 +83,7 @@ it('profile information can be updated', function () {
     Storage::delete([$this->user->avatar]);
 });
 
-it('profile can be delete if not department manager', function () {
+it('profile can be deleted if not department manager', function () {
     $this
         ->actingAs($this->user)
         ->delete('/profile', [
