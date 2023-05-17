@@ -53,10 +53,32 @@ it('Invitation is stored', function () {
     ]);
 
     $this->assertDatabaseHas('department_invitations', [
-            'user_id'=>$this->user->id,
-            'email'=>$this->inviteeEmail,
-            'status'=>InviteStatus::Pending->value
-        ]);
+        'user_id'=>$this->user->id,
+        'email'=>$this->inviteeEmail,
+        'status'=>InviteStatus::Pending->value
+    ]);
+});
+
+
+it('Fails to send invite if email is already sent', function () {
+    $this->user->departmentInvitations()->create([
+        'email'=>$this->inviteeEmail
+    ]);
+
+    $this->assertDatabaseHas('department_invitations', [
+        'user_id'=>$this->user->id,
+        'email'=>$this->inviteeEmail,
+        'status'=>InviteStatus::Pending->value
+    ]);
+
+    $response=$this->actingAs($this->user)->post(route('department.invite'), [
+        'email'=>$this->inviteeEmail,
+        'role'=>UserRole::Member->value
+    ]);
+
+    $response->assertSessionHasErrorsIn('invite', [
+        'email'=>'Invitation already sent, please wait for 24 hours before sending another invitation or invalidate previous one to send  a new one.'
+    ]);
 });
 
 it('mail is sent to invitee', function () {
