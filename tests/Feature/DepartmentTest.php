@@ -76,7 +76,7 @@ test('create a new department and its manager', function () {
         'role'=>UserRole::Manager->value
     ])->create();
 
-    $user->sendInvite($email, $role, $department);
+    $user->sendInvite($email, $role, $department, 'onboard.create');
 
     $response=$this->post(route('onboard.store'), [
         'first_name'=>fake()->firstName(),
