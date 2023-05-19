@@ -26,6 +26,31 @@ export default function ContractDetails<clearErrorsType>({
         setData("contract_period", `${value} ${timeMeasure}`);
     }
 
+    function convertDate(strUtc: string) {
+        if (strUtc) {
+            console.log(strUtc);
+            const date = new Date(strUtc);
+            const userTimeZone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+            return date
+                .toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                    timeZone: userTimeZone,
+                })
+                .split(",")[0]
+                .split("/")
+                .reverse()
+                .join("-");
+        }
+
+        return "";
+    }
+
     return (
         <div className="tw-flex tw-flex-col tw-gap-6">
             <FormInputsLayout
@@ -36,9 +61,7 @@ export default function ContractDetails<clearErrorsType>({
                 <input
                     type="date"
                     id="start_time"
-                    value={
-                        data.start_time as "string | number | readonly string[] | undefined"
-                    }
+                    value={convertDate(data.start_time as string)}
                     onChange={(e) =>
                         handleTyping(e, data, errors, clearErrors, setData)
                     }
