@@ -1,6 +1,6 @@
 import FormInputsLayout from "@/Layouts/FormInputs.Layout";
 import handleTyping, { DataType, ErrorType } from "@/Handlers/handleTyping";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -28,7 +28,6 @@ export default function ContractDetails<clearErrorsType>({
 
     function convertDate(strUtc: string) {
         if (strUtc) {
-            console.log(strUtc);
             const date = new Date(strUtc);
             const userTimeZone =
                 Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -50,6 +49,23 @@ export default function ContractDetails<clearErrorsType>({
 
         return "";
     }
+
+    useEffect(() => {
+        const timeMeasureFormatRegex = /^\d+ \bday|week|month|year\b$/;
+
+        if (
+            timeMeasureFormatRegex.test(
+                data.contract_period as unknown as string
+            )
+        ) {
+            const [count] = (data.contract_period as unknown as string).split(
+                " "
+            );
+            setData("contract_period", `${count} ${timeMeasure}`);
+        }
+
+        return;
+    }, [timeMeasure]);
 
     return (
         <div className="tw-flex tw-flex-col tw-gap-6">

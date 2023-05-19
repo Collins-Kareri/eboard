@@ -18,7 +18,6 @@ class Calender
         preg_match('/^(\d+)\s+(.*)$/', $timePeriod, $matches);
 
         list($_, $number, $unit)=$matches;
-        $startTime=Carbon::createFromTimestampUTC($startTime);
 
         switch(Str::lower($unit)) {
             case 'day':

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Events\DepartmentInviteSent;
 use App\Mail\DepartmentInvite;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
@@ -33,6 +34,10 @@ trait UserInvite
         Mail::mailer('smtp')->to($email)->send(
             new DepartmentInvite($signedUrl, $department)
         );
+
+        if(!is_null($startDate)) {
+            $startDate=Carbon::parse($startDate);
+        }
 
         DepartmentInviteSent::dispatch($user, $email, $department, $role, $startDate, $contractPeriod);
     }
