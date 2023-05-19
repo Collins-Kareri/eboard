@@ -22,7 +22,7 @@ class DepartmentInvitationController extends Controller
             'role'=>['required','string',Rule::in([UserRole::Member->value,UserRole::Contractor->value])],
             'department_name'=>['required','string','exists:departments,name'],
             'start_time'=>[Rule::requiredIf($request->role===UserRole::Contractor->value),Rule::excludeIf($request->role!==UserRole::Contractor->value),'date'],
-            'contract_period'=>[Rule::requiredIf($request->role===UserRole::Contractor->value),Rule::excludeIf($request->role!==UserRole::Contractor->value),'regex:/^\d+\s+(?:day|month|week|year)$/']
+            'contract_period'=>[Rule::requiredIf($request->role===UserRole::Contractor->value),Rule::excludeIf($request->role!==UserRole::Contractor->value),'regex:/^\d+\s(?:day|month|week|year)$/']
         ], [
             'email.unique'=>'User already exists'
         ])->validateWithBag('invite');

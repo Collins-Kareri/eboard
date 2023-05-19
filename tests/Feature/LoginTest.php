@@ -19,7 +19,7 @@ test('redirects to login if unauthenticated', function () {
     $response->assertRedirect(route('login.create'));
 });
 
-test("Fails login wtesth wrong credentials", function (string $email, string $password) {
+test("Fails login with wrong credentials", function (string $email, string $password) {
     $response=$this->post(route('login.store'), [
         'email'=>$email,
         'password'=>$password

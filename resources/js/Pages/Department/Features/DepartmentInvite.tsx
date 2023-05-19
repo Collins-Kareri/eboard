@@ -11,22 +11,25 @@ interface FormProps extends Record<string, unknown> {
     role: "member" | "contractor";
     start_time?: Date;
     contract_period?: string;
+    department_name: string;
 }
 
 export default function DepartmentInvite({}) {
-    const { role } = usePage<PageProps>().props.auth.user,
+    const { role, current_department } = usePage<PageProps>().props.auth.user,
         { data, setData, errors, clearErrors, processing, post } =
             useForm<FormProps>({
                 email: "",
                 role: "contractor",
                 start_time: undefined,
                 contract_period: undefined,
+                department_name: current_department,
             }),
         roles: ["member", "contractor"] = ["member", "contractor"];
 
     function invite(evt: React.FormEvent) {
         evt.preventDefault();
         post(route("department.invite"), {
+            preserveScroll: true,
             errorBag: "invite",
             onStart: () => clearErrors(),
         });

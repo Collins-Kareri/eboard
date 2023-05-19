@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\DepartmentInvitation;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -65,11 +67,12 @@ class ProfileController extends Controller
     {
         Validator::make($request->all(), [
             'password' => ['required', 'current_password'],
-            'role'=>['string',UserRole::Member->value]
+            'role'=>['string',Rule::in([UserRole::Member->value, UserRole::Contractor->value])]
         ], [
             'declined'=>'Delete account operation not available to department owners'
         ])->validateWithBag('deleteAccount');
 
+        DepartmentInvitation::where('email', '=', $request->user()->email)->delete();
 
         $user = $request->user();
 

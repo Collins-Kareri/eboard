@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\CreateAdmin;
 use App\Actions\OnboardUser;
 use App\Enums\InviteStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\User;
 use App\Enums\UserRole;
 use App\Http\Requests\RegisterRequest;
 use App\Models\DepartmentInvitation;
-use App\Models\Departments;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
