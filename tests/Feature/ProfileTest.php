@@ -41,7 +41,7 @@ test('requests for verification on email change', function () {
     Notification::assertSentTo($this->user, VerifyEmail::class);
 });
 
-test('fails update on wrong data', function (string $full_name=null, string $email, $avatar=null, string $phone_number) {
+test('fails update on wrong data', function ($full_name, string $email, $avatar, string $phone_number) {
     $response = $this
         ->actingAs($this->user)
         ->patch('/profile', [
