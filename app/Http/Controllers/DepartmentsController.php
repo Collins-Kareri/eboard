@@ -31,7 +31,7 @@ class DepartmentsController extends Controller
             'manager_email'=>['required','unique:users,email','string','email']
         ]);
 
-        $request->user()->sendInvite($request->input('manager_email'), UserRole::Manager->value, $request->input('department_name'), 'onboard.create');
+        $request->user()->sendInvite($request->input('manager_email'), UserRole::Manager->value, $request->input('department_name'));
 
         return back();
     }

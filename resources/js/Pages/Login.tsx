@@ -57,49 +57,27 @@ function Login({
                     htmlFor="password"
                     errors={errors.password}
                 >
-                    <section className="tw-flex tw-items-center tw-w-full tw-border tw-border-slate-950 tw-rounded-md focus-within:!tw-ring focus-within:!tw-ring-slate-950 tw-bg-slate-950">
-                        <input
-                            type={`${
-                                passwordVisibility === "show"
-                                    ? "text"
-                                    : "password"
-                            }`}
-                            id="password"
-                            className="!tw-bg-transparent !tw-border-none focus:tw-ring-0 tw-flex-1"
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
-                        />
-                        <span
-                            className="tw-px-2 tw-py-1 tw-h-full tw-block tw-cursor-pointer hover:tw-bg-slate-900 tw-mr-2 tw-rounded-md"
-                            onClick={() =>
-                                togglePasswordVisibility(
-                                    passwordVisibility,
-                                    setPasswordVisibility
-                                )
-                            }
-                        >
-                            {passwordVisibility === "hide" ? "show" : "hide"}
-                        </span>
-                    </section>
+                    <input
+                        type={`${
+                            passwordVisibility === "show" ? "text" : "password"
+                        }`}
+                        id="password"
+                        onChange={(e) => setData("password", e.target.value)}
+                    />
 
                     <div className="tw-mt-2 tw-flex tw-justify-between">
                         <span className="tw-flex tw-items-center tw-w-fit tw-gap-2">
                             <input
                                 type="checkbox"
                                 className="tw-p-2"
-                                checked={data.remember}
-                                onChange={(e) =>
-                                    handleTyping(
-                                        e,
-                                        data,
-                                        errors,
-                                        clearErrors,
-                                        setData
+                                onChange={() =>
+                                    togglePasswordVisibility(
+                                        passwordVisibility,
+                                        setPasswordVisibility
                                     )
                                 }
                             />
-                            <p>Remember me.</p>
+                            <p>Show password.</p>
                         </span>
 
                         {canResetPassword && (

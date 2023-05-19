@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class EmployeeID
 {
@@ -13,20 +14,15 @@ class EmployeeID
     public static function generate()
     {
         $start=User::whereNot('role', UserRole::Contractor->value)->count();
-        return "EB-".($start+1);
-    }
-
-    public static function idGenerate(int $start)
-    {
-        return "EB-".($start+1);
+        return "EB-".($start+1).'-'.Str::random(6);
     }
 
     /**
-     * Generate Id of a contract user
-     */
+         * Generate Id of a contract user
+         */
     public static function contractorId()
     {
         $start=User::where('role', UserRole::Contractor->value)->count();
-        return "EB-C-".($start+1);
+        return "EB-C-".($start+1).'-'.Str::random(6);
     }
 }

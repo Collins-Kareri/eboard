@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Mail\DepartmentInvite;
+use App\Models\DepartmentInvitation;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,8 +14,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('model:prune', [
-            '--model'=>[DepartmentInvite::class],
-        ])->daily();
+            '--model'=>[DepartmentInvitation::class],
+        ])->everyThirtyMinutes();
         $schedule->command('auth:clear-resets')->everyFifteenMinutes();
     }
 

@@ -11,11 +11,11 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\CreateAdminController;
 use App\Http\Controllers\DepartmentInvitationController;
 use App\Http\Controllers\DepartmentsController;
-use App\Http\Controllers\OnBoardingController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\UserCreateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,10 +43,9 @@ Route::middleware('guest')->group(function () {
         Route::post('forgot-password', 'store')->name('password.request.email');
     });
 
-
-    Route::controller(OnBoardingController::class)->group(function () {
-        Route::get('/onboard/{email?}/{role?}/{department?}', 'create')->name('onboard.create');
-        Route::post('/onboard', 'store')->name('onboard.store');
+    Route::controller(CreateAdminController::class)->group(function () {
+        Route::get('/register', 'create')->name('register.create');
+        Route::post('/register', 'store')->name('register.store');
     });
 
     // password reset
@@ -59,9 +58,9 @@ Route::middleware('guest')->group(function () {
     });
 
     // register a new user
-    Route::controller(RegisterController::class)->group(function () {
-        Route::get('/register/{email?}/{role?}', 'create')->name('register.create');
-        Route::post('/register', 'store')->name('register.store');
+    Route::controller(UserCreateController::class)->group(function () {
+        Route::get('/user/create/{email?}', 'create')->name('user.create');
+        Route::post('/user/create', 'store')->name('user.store');
     });
 });
 

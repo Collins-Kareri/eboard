@@ -35,7 +35,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name',
         'phone_number',
         'email',
-        'address',
         'password',
         'job_title',
         'avatar',
@@ -91,13 +90,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function employeeID(): Attribute
     {
         return Attribute::make(
-            set:function (string $value) {
-                if($this->role !== UserRole::Contractor->value) {
-                    $value=EmployeeID::generate();
-                    return $value;
+            set:function () {
+                if($this->role === UserRole::Contractor->value) {
+                    // $this->employeeID=EmployeeID::contractorId();
+                    return EmployeeID::contractorId();
                 } else {
-                    $value=EmployeeID::contractorId();
-                    return $value;
+                    // $this->employeeID=EmployeeID::generate();
+                    return EmployeeID::generate();
                 }
             }
         );

@@ -17,23 +17,23 @@ trait UserInvite
      * @param string $email the email of the invited user
      * @param string $role the role of the invited user
      * @param string $department the department the invited user will be a part of
-     * @param string $route the route that will be in the signed url generated for the invitee. If a department creation we use onboard.create else register.create
+     * @param string $route the route that will be in the signed url generated for the invitee. If a department creation we use onboard.create else user.create
+     * @param optional $startDate
+     * @param optional $contractPeriod
      */
-    public function sendInvite(string $email, string $role, string $department, string $route)
+    public function sendInvite(string $email, string $role, string $department, $startDate=null, $contractPeriod=null)
     {
         $user=$this;
         $startTime=now();
 
-        $signedUrl=URL::temporarySignedRoute($route, $startTime->addHours(24), [
-            'email'=>$email,
-            'role'=>$role,
-            'department'=>$department
+        $signedUrl=URL::temporarySignedRoute('user.create', $startTime->addHours(24), [
+            'email'=>$email
         ]);
 
         Mail::mailer('smtp')->to($email)->send(
             new DepartmentInvite($signedUrl, $department)
         );
 
-        DepartmentInviteSent::dispatch($email, $user);
+        DepartmentInviteSent::dispatch($user, $email, $department, $role, $startDate, $contractPeriod);
     }
 }

@@ -18,7 +18,12 @@ class DepartmentInvitation extends Model
     use MassPrunable;
 
     protected $fillable=[
-        'email'
+        'email',
+        'role',
+        'department_name',
+        'contract_start_date',
+        'contract_end_date',
+        'status'
     ];
 
     public function prunable(): Builder
