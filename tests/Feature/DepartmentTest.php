@@ -55,11 +55,22 @@ test('can create a department if manager', function () {
 });
 
 test('renders onboard screen while url is signed', function () {
+    $email=fake()->email();
+    $user=User::factory()->for($this->department)->state([
+        'role'=>UserRole::Manager->value,
+    ])->create();
+
     $startTime=now();
 
-    $signedUrl=URL::temporarySignedRoute('register.create', $startTime->addHours(24), [
-        'email'=>fake()->email(),
-        'role'=>UserRole::Manager->value
+    $user->departmentInvitations()->create([
+        'email'=>$email,
+        'role'=>UserRole::Member->value,
+        'department_name'=>$this->department->name,
+        'status'=>InviteStatus::Pending->value
+    ]);
+
+    $signedUrl=URL::temporarySignedRoute('user.create', $startTime->addHours(24), [
+        'email'=>$email
     ]);
 
     $response=$this->get($signedUrl);
@@ -68,24 +79,24 @@ test('renders onboard screen while url is signed', function () {
 
 test('create a new department and its manager', function () {
     Mail::fake();
+
     $email='finance@mail.com';
     $role=UserRole::Manager->value;
     $department='finance';
 
     $user=User::factory()->for($this->department)->state([
-        'role'=>UserRole::Manager->value
+        'role'=>$role
     ])->create();
 
-    $user->sendInvite($email, $role, $department, 'onboard.create');
+    $user->sendInvite($email, $role, $department);
 
-    $response=$this->post(route('onboard.store'), [
+    $response=$this->post(route('user.store'), [
         'first_name'=>fake()->firstName(),
         'last_name'=>fake()->lastName(),
         'job_title'=>fake()->jobTitle(),
         'email'=>$email,
         'phone_number'=>fake()->phoneNumber(),
         'password'=>$this->defaultPassword,
-        'role'=>$role,
         'department_name'=>$department
     ]);
 

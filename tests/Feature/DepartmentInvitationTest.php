@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
     Mail::fake();
-    $this->user=User::factory()->state([
-        'role'=>UserRole::Manager->value
-    ])->for(Departments::factory()->state([
+    $this->department=Departments::factory()->state([
         'name'=>'hr'
-    ]))->create();
+    ])->create();
+    $this->user=User::factory()->state([
+        'role'=>UserRole::Manager->value,
+    ])->for($this->department)->create();
     $this->inviteeEmail=fake()->email();
     $this->startTime=now();
 });
@@ -26,7 +27,8 @@ test('Can only send invite if manager', function () {
 
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
-        'role'=>UserRole::Member->value
+        'role'=>UserRole::Member->value,
+        'department_name'=>$this->department->name
     ]);
 
     $response->assertForbidden();
@@ -38,28 +40,34 @@ test('Can only send invite if manager', function () {
 test('Manager can invite new members', function () {
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
-        'role'=>UserRole::Member->value
+        'role'=>UserRole::Member->value,
+        'department_name'=>$this->department->name
     ]);
 
     $response->assertRedirect();
 });
 
 test('Invitation is stored', function () {
+    // department.invite
     $this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
-        'role'=>UserRole::Member->value
+        'role'=>UserRole::Member->value,
+        'department_name'=>$this->department->name
     ]);
 
     $this->assertDatabaseHas('department_invitations', [
         'user_id'=>$this->user->id,
         'email'=>$this->inviteeEmail,
+        'department_name'=>$this->department->name,
         'status'=>InviteStatus::Pending->value
     ]);
 });
 
 test('Fails to send invite if email is already sent', function () {
     $this->user->departmentInvitations()->create([
-        'email'=>$this->inviteeEmail
+        'email'=>$this->inviteeEmail,
+        'department_name'=>$this->department->name,
+        'role'=>UserRole::Member->value
     ]);
 
     $this->assertDatabaseHas('department_invitations', [
@@ -70,7 +78,8 @@ test('Fails to send invite if email is already sent', function () {
 
     $response=$this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
-        'role'=>UserRole::Member->value
+        'role'=>UserRole::Member->value,
+        'department_name'=>$this->department->name
     ]);
 
     $response->assertSessionHasErrorsIn('invite', [
@@ -83,7 +92,8 @@ test('mail is sent to invitee', function () {
 
     $this->actingAs($this->user)->post(route('department.invite'), [
         'email'=>$this->inviteeEmail,
-        'role'=>UserRole::Member->value
+        'role'=>UserRole::Member->value,
+        'department_name'=>$this->department->name
     ]);
 
     $inviteeEmail=$this->inviteeEmail;
@@ -98,7 +108,8 @@ test('sends invites to members and contractors', function (string $email, string
         'email'=>$email,
         'role'=>$role,
         'start_time'=>$start_time,
-        'contract_period'=>$contract_period
+        'contract_period'=>$contract_period,
+        'department_name'=>$this->department->name
     ]);
 
     $response->assertRedirect();
@@ -112,7 +123,8 @@ test('fails to invite contractors if wrong values are provided contract details'
         'email'=>$email,
         'role'=>$role,
         'start_time'=>$start_time,
-        'contract_period'=>$contract_period
+        'contract_period'=>$contract_period,
+        'department_name'=>$this->department->name
     ]);
 
     $response->assertInvalid();
