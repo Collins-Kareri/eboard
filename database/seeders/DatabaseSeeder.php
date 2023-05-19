@@ -7,7 +7,9 @@ namespace Database\Seeders;
 use App\Enums\UserRole;
 use App\Models\Departments;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,20 +18,45 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->for(Departments::factory()->state([
-            'name'=>'hr'
-        ]))
-        ->create([
-            'first_name'=>'John',
-            'last_name'=>'Doe',
-            'email'=>'johnDoe@mail.com',
-            'job_title'=>'hr manager',
-            'role'=>UserRole::Manager->value
-        ]);
+        Departments::factory()->count(5)->sequence(
+            ['name'=>'hr'],
+            ['name'=>'finance'],
+            ['name'=>'it'],
+            ['name'=>'marketing'],
+            ['name'=>'operations management']
+        )->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
+        $department_ids=Departments::all()->modelKeys();
+        $roles=array_column(UserRole::cases(), 'value');
+
+        for($count=1;$count<=80;$count++) {
+            User::factory()->state(
+                new Sequence(
+                    fn () =>[
+                        'role'=>Arr::random($roles),
+                        'departments_id'=>Arr::random($department_ids)
+                    ]
+                )
+            )
+                    ->create([
+                        'first_name'=>fake()->firstName(),
+                        'last_name'=>fake()->lastName(),
+                        'email'=>fake()->unique()->safeEmail(),
+                        'job_title'=>fake()->jobTitle(),
+                    ]);
+
+        }
+
+
+        // User::factory()->for(Departments::factory()->state([
+        //     'name'=>'hr'
+        // ]))
+        // ->create([
+        //     'first_name'=>'John',
+        //     'last_name'=>'Doe',
+        //     'email'=>'johnDoe@mail.com',
+        //     'job_title'=>'hr manager',
+        //     'role'=>UserRole::Manager->value
         // ]);
     }
 }
