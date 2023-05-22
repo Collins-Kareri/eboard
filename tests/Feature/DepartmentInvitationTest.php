@@ -6,7 +6,6 @@ use App\Enums\UserRole;
 use App\Enums\InviteStatus;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\DepartmentInvite;
-use App\Models\DepartmentInvitation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 
