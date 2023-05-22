@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Departments;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,7 +44,19 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function user(array $data=[], Departments $department): User
 {
-    // ..
+    return User::factory()->for($department)->create($data);
+}
+
+function department(string $name): Departments
+{
+    return Departments::factory()->state([
+        'name'=>$name
+    ])->create();
+}
+
+function defaultPassword(): string
+{
+    return 's£cReT123';
 }
