@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Helpers;
 
 use App\Enums\InviteStatus;
 use App\Enums\UserRole;
@@ -18,8 +18,11 @@ class OnboardUser
      * @param string $role
      * @param string $department_name
      */
-    public static function makeUser($request, string $role, string $department_name)
-    {
+    public static function makeUser(
+        $request,
+        string $role,
+        string $department_name
+    ) {
         $user=new User();
         $department=null;
 
@@ -44,7 +47,11 @@ class OnboardUser
 
         $user->save();
 
-        DepartmentInvitation::where('email', '=', $request->input('email'))->update([
+        DepartmentInvitation::where(
+            'email',
+            '=',
+            $request->input('email')
+        )->update([
             'status'=>InviteStatus::Accepted->value
         ]);
 
