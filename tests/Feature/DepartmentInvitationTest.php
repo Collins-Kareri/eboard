@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\User;
-use App\Models\Departments;
 use App\Enums\UserRole;
 use App\Enums\InviteStatus;
 use Illuminate\Support\Facades\Mail;
@@ -11,12 +9,10 @@ use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
     Mail::fake();
-    $this->department=Departments::factory()->state([
-        'name'=>'hr'
-    ])->create();
-    $this->user=User::factory()->state([
-        'role'=>UserRole::Manager->value,
-    ])->for($this->department)->create();
+    $this->department=department('hr');
+    $this->user=user([
+        'role'=>UserRole::Manager->value
+    ], $this->department);
     $this->inviteeEmail=fake()->email();
     $this->startTime=now();
 });

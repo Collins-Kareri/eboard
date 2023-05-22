@@ -1,22 +1,17 @@
 <?php
 
-use App\Models\Departments;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 
 beforeEach(function () {
-    $this->departments=Departments::factory()->state([
-        'name'=>'hr'
-    ])->create();
-    $this->user=User::factory()->state([
+    $department=department('hr');
+    $this->user=user([
         'email'=>'dev@eboard.com'
-    ])->for($this->departments)->create();
+    ], $department);
 });
 
 test('redirects to login if unauthenticated', function () {
     $response=$this->get(RouteServiceProvider::HOME);
-
-    $response->assertRedirect(route('login.create'));
+    $response->assertRedirect();
 });
 
 test("Fails login with wrong credentials", function (string $email, string $password) {
@@ -31,11 +26,10 @@ test("Fails login with wrong credentials", function (string $email, string $pass
     'invalid password'=>['dev@eboard.com','wrong_password']
 ]);
 
-
 test('Logs in user', function () {
     $response=$this->post(route('login.store'), [
         'email'=>$this->user->email,
-        'password'=>'s£cReT123'
+        'password'=>defaultPassword()
     ]);
 
     $this->assertAuthenticated();

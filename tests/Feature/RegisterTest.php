@@ -3,10 +3,6 @@
 use App\Enums\UserRole;
 use App\Models\Departments;
 
-beforeEach(function () {
-    $this->defaultPassword="s£cReT123";
-});
-
 test('Redirects to register page if no admin is available', function () {
     $response=$this->get(route('home'));
     $response->assertRedirectToRoute('register.create');
@@ -19,7 +15,7 @@ test('Can register a new admin who is the manager of hr department', function (s
         'job_title'=>fake()->jobTitle(),
         'email'=>$email,
         'phone_number'=>fake()->phoneNumber(),
-        'password'=>$this->defaultPassword
+        'password'=>defaultPassword()
     ]);
 
     $response->assertRedirectToRoute('home');

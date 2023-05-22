@@ -1,18 +1,15 @@
 <?php
 
-use App\Models\Departments;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 
 beforeEach(function () {
-    $department=Departments::factory()->create();
-
-    $this->user = User::factory()->for($department)->create([
-        'email_verified_at' => null,
-    ]);
+    $department=department('hr');
+    $this->user = user([
+        'email_verified_at' => null
+    ], $department);
 });
 
 test('email verification screen can be rendered', function () {

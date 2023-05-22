@@ -1,19 +1,12 @@
 <?php
 
-use App\Models\User;
-use App\Models\Departments;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    $this->user=User::factory()->for(Departments::factory()->state([
-            'name'=>'hr'
-        ]))->create();
+    $this->user=user([], department('hr'));
 });
 
 test('profile page is displayed', function () {

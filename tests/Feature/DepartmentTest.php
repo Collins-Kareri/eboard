@@ -3,20 +3,15 @@
 use App\Enums\InviteStatus;
 use App\Enums\UserRole;
 use App\Mail\DepartmentInvite;
-use App\Models\Departments;
-use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
 beforeEach(function () {
-    $this->department=Departments::factory()->state([
-        'name'=>'hr'
-    ])->create();
-    $this->defaultPassword="s£cReT123";
+    $this->department=department('hr');
 });
 
 test('fails to create department if not manager', function () {
-    $user=User::factory()->for($this->department)->create();
+    $user=user([], $this->department);
 
     $response=$this->actingAs($user)->post(route('department.store'), [
         'department_name'=>'finance',
@@ -29,9 +24,9 @@ test('fails to create department if not manager', function () {
 test('can create a department if manager', function () {
     Mail::fake();
 
-    $user=User::factory()->for($this->department)->state([
+    $user=user([
         'role'=>UserRole::Manager->value
-    ])->create();
+    ], $this->department);
 
     $response=$this->actingAs($user)->post(route('department.store'), [
         'department_name'=>'finance',
@@ -56,9 +51,7 @@ test('can create a department if manager', function () {
 
 test('renders onboard screen while url is signed', function () {
     $email=fake()->email();
-    $user=User::factory()->for($this->department)->state([
-        'role'=>UserRole::Manager->value,
-    ])->create();
+    $user=user(['role'=>UserRole::Manager->value], $this->department);
 
     $startTime=now();
 
@@ -84,9 +77,9 @@ test('create a new department and its manager', function () {
     $role=UserRole::Manager->value;
     $department='finance';
 
-    $user=User::factory()->for($this->department)->state([
+    $user=user([
         'role'=>$role
-    ])->create();
+    ], $this->department);
 
     $user->sendInvite($email, $role, $department);
 
@@ -96,7 +89,7 @@ test('create a new department and its manager', function () {
         'job_title'=>fake()->jobTitle(),
         'email'=>$email,
         'phone_number'=>fake()->phoneNumber(),
-        'password'=>$this->defaultPassword,
+        'password'=>defaultPassword(),
         'department_name'=>$department
     ]);
 
