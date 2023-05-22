@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\OnboardUser;
+use App\Helpers\OnboardUser;
 use App\Enums\UserRole;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;

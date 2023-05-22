@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\OnboardUser;
+use App\Helpers\OnboardUser;
 use App\Enums\InviteStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,7 +10,6 @@ use App\Enums\UserRole;
 use App\Http\Requests\RegisterRequest;
 use App\Models\DepartmentInvitation;
 use App\Providers\RouteServiceProvider;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -50,11 +49,19 @@ class UserCreateController extends Controller
             'email.exists'=>'not found'
         ])->validate();
 
-        $invitation=DepartmentInvitation::where('email', '=', $request->email)->first();
+        $invitation=DepartmentInvitation::where(
+            'email',
+            '=',
+            $request->email
+        )->first();
 
         abort_if($invitation->status===InviteStatus::Accepted->value, 404);
 
-        $user=OnboardUser::makeUser($request, $invitation->role, $invitation->department_name);
+        $user=OnboardUser::makeUser(
+            $request,
+            $invitation->role,
+            $invitation->department_name
+        );
 
         if($invitation->role === UserRole::Contractor->value) {
             $user->contract_start_date=$invitation->contract_start_date;
