@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Notification;
 
 beforeEach(function () {
     $department=department('hr');
-    $this->user =user([], $department);
+    $this->user =user($department);
 });
 
 test('reset password link screen can be rendered')->get('/forgot-password')->assertStatus(200);

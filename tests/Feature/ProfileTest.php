@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    $this->user=user([], department('hr'));
+    $this->user=user(department('hr'));
 });
 
 test('profile page is displayed', function () {

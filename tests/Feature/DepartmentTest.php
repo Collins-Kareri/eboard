@@ -8,25 +8,30 @@ use Illuminate\Support\Facades\URL;
 
 beforeEach(function () {
     $this->department=department('hr');
+    $this->user=user($this->department, [
+        'role'=>UserRole::Manager->value
+    ]);
 });
 
 test('fails to create department if not manager', function () {
-    $user=user([], $this->department);
+    $this->user->role=UserRole::Member->value;
+    $this->user->save();
 
-    $response=$this->actingAs($user)->post(route('department.store'), [
+    $response=$this->actingAs($this->user)->post(route('department.store'), [
         'department_name'=>'finance',
         'manager_email'=>'test@mail.com'
     ]);
 
     $response->assertForbidden();
+
+    $this->user->role=UserRole::Manager->value;
+    $this->user->save();
 });
 
 test('can create a department if manager', function () {
     Mail::fake();
 
-    $user=user([
-        'role'=>UserRole::Manager->value
-    ], $this->department);
+    $user=$this->user;
 
     $response=$this->actingAs($user)->post(route('department.store'), [
         'department_name'=>'finance',
@@ -51,7 +56,7 @@ test('can create a department if manager', function () {
 
 test('renders onboard screen while url is signed', function () {
     $email=fake()->email();
-    $user=user(['role'=>UserRole::Manager->value], $this->department);
+    $user=$this->user;
 
     $startTime=now();
 
@@ -77,9 +82,7 @@ test('create a new department and its manager', function () {
     $role=UserRole::Manager->value;
     $department='finance';
 
-    $user=user([
-        'role'=>$role
-    ], $this->department);
+    $user=$this->user;
 
     $user->sendInvite($email, $role, $department);
 

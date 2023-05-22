@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Event;
 beforeEach(function () {
     Mail::fake();
     $this->department=department('hr');
-    $this->user=user([
+    $this->user=user($this->department, [
         'role'=>UserRole::Manager->value
-    ], $this->department);
+    ]);
     $this->inviteeEmail=fake()->email();
     $this->startTime=now();
 });

@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\URL;
 
 beforeEach(function () {
     $department=department('hr');
-    $this->user = user([
+    $this->user = user($department, [
         'email_verified_at' => null
-    ], $department);
+    ]);
 });
 
 test('email verification screen can be rendered', function () {

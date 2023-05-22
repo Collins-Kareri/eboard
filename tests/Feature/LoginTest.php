@@ -4,9 +4,9 @@ use App\Providers\RouteServiceProvider;
 
 beforeEach(function () {
     $department=department('hr');
-    $this->user=user([
+    $this->user=user($department, [
         'email'=>'dev@eboard.com'
-    ], $department);
+    ]);
 });
 
 test('redirects to login if unauthenticated', function () {
