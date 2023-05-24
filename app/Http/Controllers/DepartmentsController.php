@@ -15,8 +15,7 @@ class DepartmentsController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Department/Department');
-        ;
+        return Departments::all()->pluck('name');
     }
 
     /**
