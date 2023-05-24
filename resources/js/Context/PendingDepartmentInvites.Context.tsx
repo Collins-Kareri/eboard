@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 
-export interface PendingInviteContextProps {}
-
 interface PendingInvitesContextProps {
     pendingInvites: number;
     setPending: (inviteCount: number) => void;
@@ -18,7 +16,7 @@ const PendingInvitesContext = createContext<PendingInvitesContextProps>({
     },
 });
 
-export const PendingInvitesProvider = ({ children }: InviteProps) => {
+export const PendingInvitesContextProvider = ({ children }: InviteProps) => {
     const [pendingInvites, setPendingInvites] = useState<number>(0);
 
     const setPending = (inviteCount: number) => {
