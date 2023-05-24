@@ -15,6 +15,7 @@ use App\Http\Controllers\CreateAdminController;
 use App\Http\Controllers\DepartmentInvitationController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserCreateController;
 
@@ -75,11 +76,9 @@ Route::middleware('auth:web')->group(function () {
             return Inertia::render('Tasks');
         })->name('tasks');
 
-
         Route::get('/department', function () {
             return Inertia::render('Department/Department');
         })->name('department');
-
 
         Route::prefix('/calender')->group(function () {
             Route::get('/', function () {
@@ -95,6 +94,8 @@ Route::middleware('auth:web')->group(function () {
         })->name('calender');
 
         Route::Resource('employees', EmployeeController::class);
+
+        Route::get('/filters', FilterController::class)->name('filters');
 
         Route::controller(ProfileController::class)->group(function () {
             Route::get('/profile', 'edit')->name('profile.edit');
