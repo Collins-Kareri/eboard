@@ -11,7 +11,7 @@ function CreateDepartment() {
         });
 
     function createDepartment() {
-        post(route("department.store"), {
+        post(route("departments.store"), {
             preserveScroll: true,
             onSuccess: () => reset(),
         });
