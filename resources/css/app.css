@@ -8,7 +8,7 @@
     }
 
     button {
-        @apply tw-capitalize tw-px-4 tw-py-2 tw-rounded-md tw-border-[1px];
+        @apply tw-capitalize tw-px-4 tw-py-2 tw-rounded-md tw-border-[1px] tw-cursor-pointer disabled:tw-opacity-50 disabled:tw-cursor-not-allowed;
     }
 
     input,
