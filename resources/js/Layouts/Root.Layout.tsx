@@ -1,5 +1,5 @@
 import Nav from "@/Components/Nav/Nav";
-import { PendingInvitesProvider } from "@/Context/PendingDepartmentInvites";
+import { PendingInvitesContextProvider } from "@/Context/PendingDepartmentInvites.Context";
 import React from "react";
 
 function RootLayout({ children }: React.PropsWithChildren) {
@@ -7,7 +7,9 @@ function RootLayout({ children }: React.PropsWithChildren) {
         <>
             <Nav />
             <main className="tw-p-6 tw-flex tw-flex-col tw-gap-6">
-                <PendingInvitesProvider>{children}</PendingInvitesProvider>
+                <PendingInvitesContextProvider>
+                    {children}
+                </PendingInvitesContextProvider>
             </main>
         </>
     );
