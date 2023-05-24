@@ -17,7 +17,7 @@ test('fails to create department if not manager', function () {
     $this->user->role=UserRole::Member->value;
     $this->user->save();
 
-    $response=$this->actingAs($this->user)->post(route('department.store'), [
+    $response=$this->actingAs($this->user)->post(route('departments.store'), [
         'department_name'=>'finance',
         'manager_email'=>'test@mail.com'
     ]);
@@ -33,7 +33,7 @@ test('can create a department if manager', function () {
 
     $user=$this->user;
 
-    $response=$this->actingAs($user)->post(route('department.store'), [
+    $response=$this->actingAs($user)->post(route('departments.store'), [
         'department_name'=>'finance',
         'manager_email'=>'test@mail.com'
     ]);
