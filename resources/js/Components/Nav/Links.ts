@@ -19,7 +19,7 @@ const myLinks: Links = {
             textContent: "tasks",
         },
         {
-            to: "employees",
+            to: "employees.index",
             textContent: "employees",
         },
     ],
