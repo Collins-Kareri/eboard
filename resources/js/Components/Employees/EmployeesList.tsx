@@ -1,59 +1,26 @@
-import {
-    faFilter,
-    faTable,
-    faTableList,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTable, faTableList } from "@fortawesome/free-solid-svg-icons";
 import Icon from "@/Components/Icon";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EmployeesTable from "@/Components/Employees/Partials/EmployeesTable";
 import EmployeesCard from "@/Components/Employees/Partials/EmployeesCard";
 import Filter from "@/Components/Employees/Features/Filter";
 import AddEmployee from "@/Components/Employees/Features/Add.Employee";
+import { User } from "@/types";
+import { EmployeesPageProps } from "@/Pages/Employees";
+import Pagination from "@/Components/Pagination/Pagination";
 
 export interface EmployeesProps {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-    address: {
-        street: string;
-        suite: string;
-        city: string;
-        zipcode: string;
-        geo: {
-            lat: string;
-            lng: string;
-        };
-    };
-    phone: string;
-    website: string;
-    company: {
-        name: string;
-        catchPhrase: string;
-        bs: string;
-    };
+    employees: User[];
 }
 
-function EmployeesList() {
+function EmployeesList({ employees }: { employees: EmployeesPageProps }) {
     const [activeView, setActiveView] = useState<"table view" | "card view">(
-            "table view"
-        ),
-        [employees, setEmployees] = useState<[] | EmployeesProps[]>([]);
-
-    function showEmployees() {
-        fetch("https://jsonplaceholder.typicode.com/users")
-            .then((res) => res.json())
-            .then((parsedRes) => setEmployees(parsedRes))
-            .catch((err) => alert(err));
-    }
-
-    useEffect(() => {
-        showEmployees();
-    }, []);
+        "table view"
+    );
 
     return (
         <div className="tw-relative">
-            <section className="tw-flex tw-w-full tw-justify-between tw-items-center tw-mb-8">
+            <section className="tw-flex tw-w-full tw-justify-between tw-items-center tw-my-8">
                 <span className="tw-flex tw-h-fit tw-w-fit tw-gap-2">
                     <Icon
                         icon={faTableList}
@@ -78,15 +45,25 @@ function EmployeesList() {
                 <AddEmployee />
             </section>
             {activeView === "table view" ? (
-                <EmployeesTable employees={employees} />
+                <EmployeesTable employees={employees.data} />
             ) : (
                 <></>
             )}
             {activeView === "card view" ? (
-                <EmployeesCard employees={employees} />
+                <EmployeesCard employees={employees.data} />
             ) : (
                 <></>
             )}
+            <Pagination
+                current_page={employees.current_page}
+                first_page_url={employees.first_page_url}
+                last_page_url={employees.last_page_url}
+                last_page={employees.last_page}
+                next_page_url={employees.next_page_url}
+                prev_page_url={employees.prev_page_url}
+                total={employees.total}
+                path={employees.path}
+            />
         </div>
     );
 }
