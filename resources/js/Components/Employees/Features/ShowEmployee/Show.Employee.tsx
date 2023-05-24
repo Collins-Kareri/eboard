@@ -1,5 +1,4 @@
 import { useState, Fragment } from "react";
-import { EmployeesProps } from "../../EmployeesList";
 import Icon from "@/Components/Icon";
 import {
     faAngleLeft,
@@ -9,8 +8,9 @@ import {
 import { Dialog, Transition } from "@headlessui/react";
 import EditEmployee from "@/Components/Employees/Features/Edit.Employee";
 import BodyContent from "@/Components/Employees/Features/ShowEmployee/BodyContent";
+import { User } from "@/types";
 
-function ShowEmployee({ employee }: { employee: EmployeesProps }) {
+function ShowEmployee({ employee }: { employee: User }) {
     const [isOpen, setIsOpen] = useState(false),
         [data, setData] = useState({}),
         [featureState, setFeatureState] = useState<"show" | "edit">("show");
@@ -76,7 +76,7 @@ function ShowEmployee({ employee }: { employee: EmployeesProps }) {
                                     setFeatureState={setFeatureState}
                                 />
                             ) : (
-                                <EditEmployee employee={employee} />
+                                <EditEmployee />
                             )}
                         </Dialog.Panel>
                     </div>

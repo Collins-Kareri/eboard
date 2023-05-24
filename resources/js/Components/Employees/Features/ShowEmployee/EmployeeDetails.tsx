@@ -1,38 +1,27 @@
-import { EmployeesProps } from "@/Components/Employees/EmployeesList";
+import { User } from "@/types";
 
-function EmployeeDetails({ employee }: { employee: EmployeesProps }) {
+function EmployeeDetails({ employee }: { employee: User }) {
     return (
         <section className="tw-grid tw-grid-cols-2 tw-relative tw-w-full tw-gap-y-1">
             <span className="tw-flex tw-gap-2">
-                <b className="tw-capitalize">id:</b>
-                <p>{employee.id}</p>
+                <b className="tw-capitalize">employee id:</b>
+                <p>{employee.employeeID}</p>
             </span>
             <span className="tw-flex tw-gap-2">
                 <b className="tw-capitalize">name:</b>
-                <p>{employee.name}</p>
+                <p>{employee.full_name}</p>
             </span>
             <span className="tw-flex tw-gap-2">
                 <b className="tw-capitalize">email:</b>
                 <p>{employee.email}</p>
             </span>
             <span className="tw-flex tw-gap-2">
-                <b className="tw-capitalize">location:</b>
-                <p>
-                    {employee.address.street}, {employee.address.city}
-                </p>
-            </span>
-
-            <span className="tw-flex tw-gap-2">
                 <b className="tw-capitalize">phone:</b>
-                <p>{employee.phone}</p>
-            </span>
-            <span className="tw-flex tw-gap-2">
-                <b className="tw-capitalize">manager:</b>
-                <p>{employee.username}</p>
+                <p>{employee.phone_number}</p>
             </span>
             <span className="tw-flex tw-gap-2">
                 <b className="tw-capitalize">department:</b>
-                <p>{employee.company.name}</p>
+                <p>{employee.current_department}</p>
             </span>
         </section>
     );

@@ -1,15 +1,11 @@
 import { EmployeesProps } from "@/Components/Employees/EmployeesList";
-import {
-    faEnvelope,
-    faMapPin,
-    faPhoneAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faPhoneAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ShowEmployee from "@/Components/Employees/Features/ShowEmployee/Show.Employee";
 
-function EmployeesTable({ employees }: { employees: EmployeesProps[] | [] }) {
+function EmployeesTable({ employees }: EmployeesProps) {
     return (
-        <section className="tw-w-full tw-h-[500px] tw-overflow-auto tw-mt-8">
+        <section className="tw-w-full tw-h-fit tw-overflow-auto">
             <table className="tw-w-absolute tw-w-full tw-table-auto tw-caption-top tw-mx-auto tw-border-collapse tw-border-y tw-border-slate-400 tw-rounded-lg tw-top-0 tw-left-0">
                 <caption className="tw-text-xl tw-font-bold tw-px-8">
                     Employees
@@ -36,7 +32,7 @@ function EmployeesTable({ employees }: { employees: EmployeesProps[] | [] }) {
                         return (
                             <tr key={employee.id} className="tw-text-center">
                                 <td className="tw-border-y tw-border-slate-400 tw-bg-slate-950 tw-px-3 tw-py-1 tw-whitespace-nowrap tw-w-auto">
-                                    {employee.name}
+                                    {employee.full_name}
                                 </td>
                                 <td className="tw-border-y tw-border-slate-400 tw-bg-slate-950 tw-px-3 tw-py-1 tw-whitespace-nowrap tw-w-auto">
                                     <div className="tw-flex tw-flex-col tw-gap-1 tw-w-fit tw-h-fit tw-justify-center">
@@ -44,7 +40,7 @@ function EmployeesTable({ employees }: { employees: EmployeesProps[] | [] }) {
                                             <FontAwesomeIcon
                                                 icon={faPhoneAlt}
                                             />
-                                            <span>{employee.phone}</span>
+                                            <span>{employee.phone_number}</span>
                                         </p>
                                         <p className="tw-flex tw-items-center tw-h-fit tw-gap-2 tw-w-fit tw-justify-center">
                                             <FontAwesomeIcon
@@ -52,17 +48,13 @@ function EmployeesTable({ employees }: { employees: EmployeesProps[] | [] }) {
                                             />
                                             <span>{employee.email}</span>
                                         </p>
-                                        <p className="tw-flex tw-items-center tw-h-fit tw-gap-2 tw-w-fit tw-justify-center">
-                                            <FontAwesomeIcon icon={faMapPin} />
-                                            {`${employee.address.street}, ${employee.address.city}`}
-                                        </p>
                                     </div>
                                 </td>
                                 <td className="tw-border-y tw-border-slate-400 tw-bg-slate-950 tw-px-3 tw-py-1 tw-whitespace-nowrap tw-w-auto">
-                                    {employee.company.name}
+                                    {employee.current_department}
                                 </td>
                                 <td className="tw-border-y tw-border-slate-400 tw-bg-slate-950 tw-px-3 tw-py-1 tw-whitespace-nowrap tw-w-auto tw-border-r-0 tw-text-right">
-                                    {employee.username}
+                                    {employee.employeeID}
                                 </td>
                                 <td className="tw-bg-slate-950 tw-px-3 tw-py-1 tw-border-y tw-border-slate-400 tw-border-r-0 tw-border-l-0 tw-text-left">
                                     <ShowEmployee employee={employee} />
