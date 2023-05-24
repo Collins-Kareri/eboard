@@ -1,26 +1,12 @@
 import Icon from "@/Components/Icon";
-import FilterGroup from "@/Components/FilterGroup";
+import FilterGroup from "@/Components/Filter/FilterGroup";
 import { faFilter, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Transition, Dialog } from "@headlessui/react";
 import { useState, Fragment, useEffect } from "react";
 import { useFilters } from "@/Context/Filters.Context";
 import { router, usePage } from "@inertiajs/react";
-
-export function generateUrl(currentUrl: string, filters: string[]) {
-    if (currentUrl.includes("department")) {
-        return currentUrl.replace(
-            /department=\w*/,
-            `department=${filters.join(",")}`
-        );
-    }
-
-    if (currentUrl.includes("page")) {
-        return `${currentUrl}&department=${filters.join(",")}`;
-    }
-
-    return `${currentUrl}?department=${filters.join(",")}`;
-}
+import removeParams from "@/Utils/removeParams";
 
 function Filter() {
     const [isOpen, setIsOpen] = useState(false),
@@ -36,28 +22,25 @@ function Filter() {
             .then((parsedRes) => setDepartments(parsedRes));
     }
 
-    function getFilteredData() {
-        router.get(
-            url,
-            { department: parsedFilters },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                only: ["employees"],
-            }
-        );
+    function getFilteredData(url: string, data = {}) {
+        router.get(url, data, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ["employees"],
+        });
     }
 
     function applyFilters() {
-        setIsOpen(false);
         if (filters.length > 0) {
-            getFilteredData();
+            setIsOpen(false);
+            getFilteredData(url, { department: parsedFilters });
         }
     }
 
     function clearAll() {
         setFilters([]);
-        getFilteredData();
+        console.log(removeParams(["department"], url));
+        getFilteredData(removeParams(["department"], url));
     }
 
     useEffect(() => {
