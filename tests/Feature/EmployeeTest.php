@@ -5,9 +5,12 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Inertia\Testing\AssertableInertia as Assert;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 beforeEach(function () {
     $this->seed();
+    $this->perPage=6;
+    $this->page=1;
 });
 
 test('cannot get employees if not manager', function () {
@@ -28,7 +31,16 @@ test('get all employees if manager of department', function () {
 
     $response=$this->actingAs($user)->get(route('employees.index'));
 
-    $employees=User::where('departments_id', '=', $user->departments_id)->paginate(6);
+    $employees=User::all()->where(
+        'current_department',
+        $user->current_department
+    );
+
+    $employees=new LengthAwarePaginator(
+        $employees->sliding($this->perPage)[$this->page],
+        $employees->count(),
+        $this->perPage
+    );
 
     $response->assertOk();
 
@@ -53,7 +65,14 @@ test('HR manager can get all employees in the company', function () {
 
     $response=$this->actingAs($user)->get(route('employees.index'));
 
-    $employees=User::paginate(6);
+
+    $employees=User::all();
+
+    $employees=new LengthAwarePaginator(
+        $employees->sliding($this->perPage)[$this->page],
+        $employees->count(),
+        $this->perPage
+    );
 
     $response->assertOk();
 
@@ -71,9 +90,12 @@ test('HR manager can filter results by department', function () {
     /**
      * Get a manager who is not part of hr department
      */
-    $user=User::where('role', '=', UserRole::Manager->value)->whereHas('departments', function (Builder $query) {
-        $query->where('name', '=', 'hr');
-    })
+    $user=User::where('role', '=', UserRole::Manager->value)->whereHas(
+        'departments',
+        function (Builder $query) {
+            $query->where('name', '=', 'hr');
+        }
+    )
     ->first();
 
     $department_filter="hr,it";
@@ -82,9 +104,18 @@ test('HR manager can filter results by department', function () {
         'department'=>$department_filter
     ]));
 
-    $employees=User::whereHas('departments', function (Builder $query) use ($department_filter) {
-        $query->whereIn('name', Str::of($department_filter)->split('/,/'));
-    })->paginate(6);
+
+    $employees=User::all()->whereIn(
+        'current_department',
+        Str::of($department_filter)->split('/,/')
+    );
+
+    $employees=new LengthAwarePaginator(
+        $employees->sliding($this->perPage)[$this->page],
+        $employees->count(),
+        $this->perPage
+    );
+
 
     $response->assertOk();
 
