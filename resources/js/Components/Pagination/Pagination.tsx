@@ -1,13 +1,9 @@
-import { useFilters } from "@/Context/Filters.Context";
 import {
     faAngleDoubleLeft,
     faAngleDoubleRight,
     faAngleLeft,
     faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "@inertiajs/react";
-import { generateUrl } from "@/Components/Employees/Features/Filter";
 import PaginationButton from "./PaginationButton";
 
 export interface PaginatedProps {
