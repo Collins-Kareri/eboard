@@ -5,7 +5,11 @@ import { LinkProps } from "@/Components/Nav/Links";
 function NavLink({ to, textContent }: LinkProps) {
     const { url } = usePage(),
         currentUrl = getUrl(route(to)),
-        active = currentUrl === url;
+        active =
+            currentUrl === url ||
+            url.startsWith("/" + textContent.toLocaleLowerCase());
+
+    console.log(url);
 
     return (
         <Link
