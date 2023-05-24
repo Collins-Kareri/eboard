@@ -75,6 +75,13 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['departments'];
+
+    /**
      * Returns connate of first_name and last_name columns.
      */
     public function fullName(): Attribute
