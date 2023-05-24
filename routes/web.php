@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CreateAdminController;
 use App\Http\Controllers\DepartmentInvitationController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserCreateController;
 
@@ -74,6 +75,12 @@ Route::middleware('auth:web')->group(function () {
             return Inertia::render('Tasks');
         })->name('tasks');
 
+
+        Route::get('/department', function () {
+            return Inertia::render('Department/Department');
+        })->name('department');
+
+
         Route::prefix('/calender')->group(function () {
             Route::get('/', function () {
                 return response()->json([
@@ -87,9 +94,7 @@ Route::middleware('auth:web')->group(function () {
             });
         })->name('calender');
 
-        Route::get('/employees', function () {
-            return Inertia::render('Employees');
-        })->name('employees');
+        Route::Resource('employees', EmployeeController::class);
 
         Route::controller(ProfileController::class)->group(function () {
             Route::get('/profile', 'edit')->name('profile.edit');
@@ -102,10 +107,7 @@ Route::middleware('auth:web')->group(function () {
             return redirect()->route('profile.update');
         })->name('avatar.destroy');
 
-        Route::controller(DepartmentsController::class)->group(function () {
-            Route::get('/department', 'index')->name('department');
-            Route::post('/department', 'store')->name('department.store');
-        });
+        Route::Resource('departments', DepartmentsController::class);
 
         Route::controller(DepartmentInvitationController::class)->group(function () {
             Route::post('/department/member', 'store')->name('department.invite');
