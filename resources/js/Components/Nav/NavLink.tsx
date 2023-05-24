@@ -9,8 +9,6 @@ function NavLink({ to, textContent }: LinkProps) {
             currentUrl === url ||
             url.startsWith("/" + textContent.toLocaleLowerCase());
 
-    console.log(url);
-
     return (
         <Link
             className={`tw-capitalize tw-leading-5 tw-pt-2 tw-px-1 ${
