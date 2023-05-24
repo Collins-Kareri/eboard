@@ -44,9 +44,9 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function user(Departments $department, array $data=[], int $count=1): User
+function user(Departments $department, array $data=[]): User
 {
-    return User::factory($count)->for($department)->create($data);
+    return User::factory()->for($department)->create($data);
 }
 
 function department(string $name): Departments
