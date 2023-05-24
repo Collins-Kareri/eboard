@@ -19,7 +19,7 @@ export default function PaginationButton({
     return (
         <Link
             as="button"
-            data={{ department: parsedFilters }}
+            data={parsedFilters ? { department: parsedFilters } : {}}
             href={url}
             disabled={disabled}
             preserveScroll={true}
