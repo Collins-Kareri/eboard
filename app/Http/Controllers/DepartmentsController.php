@@ -11,14 +11,6 @@ use App\Models\User;
 class DepartmentsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return Departments::all()->pluck('name');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -33,21 +25,5 @@ class DepartmentsController extends Controller
         $request->user()->sendInvite($request->input('manager_email'), UserRole::Manager->value, $request->input('department_name'));
 
         return back();
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Departments $departments)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Departments $departments)
-    {
-        //
     }
 }
