@@ -14,8 +14,8 @@ class FilterController extends Controller
     public function __invoke(Request $request)
     {
         return [
-            'departments'=>Departments::all()->pluck('name'),
-            'roles'=>array_column(UserRole::cases(), 'value')
+            'department'=>Departments::all()->pluck('name'),
+            'role'=>array_column(UserRole::cases(), 'value')
         ];
     }
 }
