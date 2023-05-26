@@ -4,13 +4,13 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Inertia\Testing\AssertableInertia as Assert;
-use Illuminate\Support\Str;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 beforeEach(function () {
     $this->seed();
     $this->perPage=6;
     $this->page=1;
+    $this->users=User::all();
 });
 
 test('cannot get employees if not manager', function () {
@@ -23,23 +23,19 @@ test('get all employees if manager of department', function () {
     /**
      * Get a manager who is not part of hr department
      */
-    $user=User::where('role', '=', UserRole::Manager->value)
-    ->whereHas('departments', function (Builder $query) {
-        $query->whereNot('name', '=', 'hr');
-    })
-    ->first();
+    $user=$this->users->whereNotInStrict('current_department', ['hr'])->firstWhere('role', UserRole::Manager->value);
 
     $response=$this->actingAs($user)->get(route('employees.index'));
 
-    $employees=User::all()->where(
-        'current_department',
-        $user->current_department
-    );
+    $employees=$this->users->filterOut([
+        'current_department'=>$user->current_department
+    ]);
 
     $employees=new LengthAwarePaginator(
-        $employees->sliding($this->perPage)[$this->page],
+        array_values($employees->sliding($this->perPage)->toArray()[$this->page-1]),
         $employees->count(),
-        $this->perPage
+        $this->perPage,
+        $this->page
     );
 
     $response->assertOk();
@@ -49,7 +45,7 @@ test('get all employees if manager of department', function () {
     ->has(
         'employees',
         fn (Assert $page) =>$page
-            ->where('data', $employees->toArray()['data'])
+            ->where('data', $employees->items())
             ->etc()
     ));
 });
@@ -66,10 +62,10 @@ test('HR manager can get all employees in the company', function () {
     $response=$this->actingAs($user)->get(route('employees.index'));
 
 
-    $employees=User::all();
+    $employees=$this->users;
 
     $employees=new LengthAwarePaginator(
-        $employees->sliding($this->perPage)[$this->page],
+        array_values($employees->sliding($this->perPage)->toArray()[$this->page-1]),
         $employees->count(),
         $this->perPage
     );
@@ -81,12 +77,12 @@ test('HR manager can get all employees in the company', function () {
         ->has(
             'employees',
             fn (Assert $page) =>$page
-                ->where('data', $employees->toArray()['data'])
+                ->where('data', $employees->items())
                 ->etc()
         ));
 });
 
-test('HR manager can filter results by department', function () {
+test('HR manager can filter results by department and roles', function ($department='', $role='') {
     /**
      * Get a manager who is not part of hr department
      */
@@ -95,27 +91,26 @@ test('HR manager can filter results by department', function () {
         function (Builder $query) {
             $query->where('name', '=', 'hr');
         }
-    )
-    ->first();
-
-    $department_filter="hr,it";
+    )->first();
 
     $response=$this->actingAs($user)->get(route('employees.index', [
-        'department'=>$department_filter
+        'department'=>$department,
+        'role'=>$role
     ]));
 
+    $users=$this->users;
 
-    $employees=User::all()->whereIn(
-        'current_department',
-        Str::of($department_filter)->split('/,/')
-    );
+    $employees=$users->filterOut([
+        'role'=>$role,
+        'current_department'=>$department
+    ]);
 
     $employees=new LengthAwarePaginator(
-        $employees->sliding($this->perPage)[$this->page],
+        array_values($employees->sliding($this->perPage)->toArray()[$this->page-1]),
         $employees->count(),
-        $this->perPage
+        $this->perPage,
+        $this->page
     );
-
 
     $response->assertOk();
 
@@ -124,7 +119,19 @@ test('HR manager can filter results by department', function () {
         ->has(
             'employees',
             fn (Assert $page) =>$page
-                ->where('data', $employees->toArray()['data'])
+                ->where('data', $employees->items())
                 ->etc()
         ));
-});
+})->with([
+    'only departments'=>[
+        'hr,it'
+    ],
+     'only roles'=>[
+        '',
+        'member'
+     ],
+      'departments and roles'=>[
+        'hr,it',
+        'manager'
+    ]
+]);
