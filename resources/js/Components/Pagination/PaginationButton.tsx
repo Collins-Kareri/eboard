@@ -1,4 +1,5 @@
 import { useFilters } from "@/Context/Filters.Context";
+import { FilterProps } from "@/types";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "@inertiajs/react";
@@ -19,7 +20,11 @@ export default function PaginationButton({
     return (
         <Link
             as="button"
-            data={parsedFilters ? { department: parsedFilters } : {}}
+            data={
+                Object.keys(parsedFilters).length > 0
+                    ? { ...parsedFilters }
+                    : {}
+            }
             href={url}
             disabled={disabled}
             preserveScroll={true}

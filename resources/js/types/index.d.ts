@@ -20,3 +20,8 @@ export type PageProps<
         user: User;
     };
 };
+
+export interface FilterProps {
+    department: string[];
+    role: string[];
+}

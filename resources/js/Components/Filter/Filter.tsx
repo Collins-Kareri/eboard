@@ -7,19 +7,24 @@ import { useState, Fragment, useEffect } from "react";
 import { useFilters } from "@/Context/Filters.Context";
 import { router, usePage } from "@inertiajs/react";
 import removeParams from "@/Utils/removeParams";
+import getTotalLengthOfObjectValues from "@/Utils/getTotalLengthOfObjectValues";
+import { FilterProps } from "@/types";
 
 function Filter() {
     const [isOpen, setIsOpen] = useState(false),
-        [departments, setDepartments] = useState([]),
+        [availableFilters, setAvailableFilters] = useState<FilterProps>({
+            department: [],
+            role: [],
+        }),
         { filters, parsedFilters, setFilters } = useFilters(),
         { url } = usePage();
 
-    function getDepartments() {
-        fetch(route("departments.index"), {
+    function getFilters() {
+        fetch(route("filters"), {
             method: "GET",
         })
             .then((res) => res.json())
-            .then((parsedRes) => setDepartments(parsedRes));
+            .then((parsedRes) => setAvailableFilters(parsedRes));
     }
 
     function getFilteredData(url: string, data = {}) {
@@ -30,21 +35,40 @@ function Filter() {
         });
     }
 
+    function cleanUpUrl(url: string, paramKeys: string[]) {
+        let currentUrl = url.trim().toLowerCase();
+
+        for (let key of paramKeys) {
+            if (
+                currentUrl.includes(key.toLowerCase()) &&
+                filters[key as keyof FilterProps].length <= 0
+            ) {
+                currentUrl = removeParams([key], currentUrl);
+            }
+        }
+
+        return currentUrl;
+    }
+
     function applyFilters() {
-        if (filters.length > 0) {
-            setIsOpen(false);
-            getFilteredData(url, { department: parsedFilters });
+        if (filters.role.length > 0 || filters.department.length > 0) {
+            getFilteredData(
+                cleanUpUrl(url, ["department", "role"]),
+                parsedFilters
+            );
         }
     }
 
     function clearAll() {
-        setFilters([]);
-        console.log(removeParams(["department"], url));
-        getFilteredData(removeParams(["department"], url));
+        setFilters({
+            department: [],
+            role: [],
+        });
+        getFilteredData(removeParams(Object.keys(filters), url));
     }
 
     useEffect(() => {
-        getDepartments();
+        getFilters();
         return;
     }, []);
 
@@ -56,7 +80,9 @@ function Filter() {
             >
                 <FontAwesomeIcon icon={faFilter} size="lg" />
                 <p>filters</p>
-                <p className="tw-opacity-50 tw-h-fit">({filters.length})</p>
+                <p className="tw-opacity-50 tw-h-fit">
+                    ({getTotalLengthOfObjectValues(filters)})
+                </p>
             </button>
             <Transition
                 show={isOpen}
@@ -102,14 +128,22 @@ function Filter() {
                                     className="secondaryBtn !tw-w-fit"
                                     onClick={clearAll}
                                 >
-                                    clear all ({filters.length})
+                                    clear all (
+                                    {getTotalLengthOfObjectValues(filters)})
                                 </button>
                             </section>
 
                             <FilterGroup
-                                items={departments}
-                                title={"departments"}
+                                items={availableFilters.department}
+                                title={"department"}
                                 defaultState={"opened"}
+                                setCurrentFilters={setFilters}
+                                currentFilters={filters}
+                            />
+                            <FilterGroup
+                                items={availableFilters.role}
+                                title={"role"}
+                                defaultState={"closed"}
                                 setCurrentFilters={setFilters}
                                 currentFilters={filters}
                             />

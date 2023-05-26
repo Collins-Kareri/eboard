@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState } from "react";
+import { FilterProps } from "@/types";
+
+type ParsedFiltersProps = {
+    [K in keyof FilterProps]?: string;
+};
 
 interface FilterContextProps {
-    filters: string[];
-    setFilters: (filters: string[]) => void;
-    parsedFilters: string;
+    filters: FilterProps;
+    setFilters: (filters: FilterProps) => void;
+    parsedFilters: ParsedFiltersProps;
 }
 
 interface FilterContextComponentProps {
@@ -11,19 +16,38 @@ interface FilterContextComponentProps {
 }
 
 const FiltersContext = createContext<FilterContextProps>({
-    filters: [],
+    filters: {
+        department: [],
+        role: [],
+    },
     setFilters: () => {
         return;
     },
-    parsedFilters: "",
+    parsedFilters: {},
 });
+
+function parseFilters(filters: FilterProps) {
+    let results: ParsedFiltersProps = {};
+
+    for (let key in filters) {
+        if (filters[key as keyof FilterProps].length > 0) {
+            results[key as keyof ParsedFiltersProps] =
+                filters[key as keyof FilterProps].join(",");
+        }
+    }
+
+    return results;
+}
 
 export const FilterContextProvider = ({
     children,
 }: FilterContextComponentProps) => {
-    const [currentFilters, setCurrentFilters] = useState<string[]>([]);
+    const [currentFilters, setCurrentFilters] = useState<FilterProps>({
+        department: [],
+        role: [],
+    });
 
-    const setFilters = (filters: string[]) => {
+    const setFilters = (filters: FilterProps) => {
         setCurrentFilters(filters);
     };
 
@@ -31,7 +55,7 @@ export const FilterContextProvider = ({
         <FiltersContext.Provider
             value={{
                 filters: currentFilters,
-                parsedFilters: currentFilters.join(","),
+                parsedFilters: parseFilters(currentFilters),
                 setFilters,
             }}
         >

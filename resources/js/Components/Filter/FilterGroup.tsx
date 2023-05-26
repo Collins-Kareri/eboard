@@ -1,3 +1,4 @@
+import { FilterProps } from "@/types";
 import {
     faAngleDown,
     faAngleUp,
@@ -9,10 +10,10 @@ import { useState } from "react";
 
 interface FilterGroupProps {
     items: string[];
-    title: string;
+    title: keyof FilterProps;
     defaultState: "opened" | "closed";
-    setCurrentFilters: (filters: string[]) => void;
-    currentFilters: string[];
+    setCurrentFilters: (filters: FilterProps) => void;
+    currentFilters: FilterProps;
 }
 
 export default function FilterGroup({
@@ -28,13 +29,23 @@ export default function FilterGroup({
         return !currentState;
     }
 
+    /**
+     * Based on the title we toggle the values of the key that title reps
+     * @param filter the value to be added or removed
+     * @returns void
+     */
     function toggleFilter(filter: string) {
-        if (currentFilters.includes(filter)) {
-            setItems([...currentFilters.filter((item) => item !== filter)]);
+        let newValue = currentFilters;
+        if (currentFilters[title].includes(filter)) {
+            newValue[title] = currentFilters[title].filter(
+                (item) => item !== filter
+            );
+            setItems({ ...newValue });
             return;
         }
 
-        setItems([...currentFilters, filter]);
+        newValue[title] = [...newValue[title], filter];
+        setItems({ ...newValue });
     }
 
     return (
@@ -65,13 +76,13 @@ export default function FilterGroup({
                             <button
                                 key={index}
                                 className={`tw-flex tw-items-center tw-gap-1 tw-border tw-rounded-full tw-w-fit tw-px-4 tw-py-2 tw-h-fit tw-whitespace-nowrap tw-bg-slate-950/30 tw-cursor-pointer ${
-                                    currentFilters.includes(item) &&
+                                    currentFilters[title].includes(item) &&
                                     "tw-border-blue-400/80"
                                 }`}
                                 onClick={() => toggleFilter(item)}
                             >
                                 <p>{item}</p>
-                                {currentFilters.includes(item) && (
+                                {currentFilters[title].includes(item) && (
                                     <FontAwesomeIcon
                                         icon={faCheckCircle}
                                         className="tw-text-blue-400/80"
