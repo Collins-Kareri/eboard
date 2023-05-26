@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -18,43 +19,40 @@ class EmployeeController extends Controller
     {
         $this->authorize('viewEmployees', User::class);
 
+        $currentPage=$request->query("page")??"1";
+        $userDepartment=$request->user()->current_department;
+
         $users=Cache::remember('users', 24*3600, function () {
             return User::all();
         });
 
-        $user=$request->user();
-        $department=$user->current_department;
-        $employees=$users;
-        $department_filter=$request->query('department');
-        $page=$request->query('page')??"1";
-        $role=$request->query('role');
-        $perPage=6;
+        $role_filters=$request->query('role');
+        $department_filters=$request->query('department');
 
-        if(Str::lower($department)==='hr') {
-            /* get all users or filter them according to department name
-                if department filters are provided
-            */
-            if(!is_null($department_filter)&&!\is_null($role)) {
-                $employees=$users->whereIn('current_department', Str::of($department_filter)->explode(","))->whereIn('role', Str::of($department_filter)->explode(","));
-            }
-
-            if(!is_null($department_filter)) {
-                $employees=$users->whereIn('current_department', Str::of($department_filter)->explode(","));
-            }
-
-            if(!is_null($role)) {
-                $employees=$users->whereIn('current_department', Str::of($department_filter)->explode(","));
-            }
-
+        if($userDepartment==="hr") {
+            $users=$users->filterOut([
+                'role'=>$role_filters,
+                'current_department'=>$department_filters
+            ]);
         } else {
-            $employees=$users->where('current_department', $department);
-
-            if(!is_null($role)) {
-                $employees=$users->whereIn('current_department', Str::of($department_filter)->explode(","))->where('current_department', $department);
-            }
+            $users=$users->filterOut([
+                'role'=>$role_filters,
+                'current_department'=>$userDepartment
+            ]);
         }
 
-        $employees=new LengthAwarePaginator($employees->sliding($perPage)[$page], $employees->count(), $perPage);
+        $total=$users->count();
+        $currentItems=array_values($users->toArray());
+        $perPage=6;
+
+        if($total>$perPage) {
+            $currentItems=array_values($users->sliding($perPage)->toArray()[(int)$currentPage-1]);
+        }
+
+        $employees=new LengthAwarePaginator($currentItems, $total, $perPage, $currentPage, [
+            'path'=>$request->path(),
+            'query'=>$request->all()
+        ]);
 
         return Inertia::render('Employees', [
             'employees' => $employees
