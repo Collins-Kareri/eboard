@@ -54,6 +54,8 @@ class EmployeeController extends Controller
             'query'=>$request->all()
         ]);
 
+        //todo add logic that adds each department manager to returned results.
+
         return Inertia::render('Employees', [
             'employees' => $employees
         ]);

@@ -51,7 +51,7 @@ function EmployeesTable({ employees }: EmployeesProps) {
                                     </div>
                                 </td>
                                 <td className="tw-border-y tw-border-slate-400 tw-bg-slate-950 tw-px-3 tw-py-1 tw-whitespace-nowrap tw-w-auto">
-                                    {employee.current_department}
+                                    {employee.current_department.toLocaleUpperCase()}
                                 </td>
                                 <td className="tw-border-y tw-border-slate-400 tw-bg-slate-950 tw-px-3 tw-py-1 tw-whitespace-nowrap tw-w-auto tw-border-r-0 tw-text-right">
                                     {employee.employeeID}
