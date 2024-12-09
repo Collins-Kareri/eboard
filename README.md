@@ -20,7 +20,7 @@ Afterwards, create a .env file and copy the contents of .env.example file inside
 # use ./vendor/bin/sail or create a sail alias.
 # Please refer to laravel sail documentation for instructions on how to do this.
 
-sail up
+sail up -d
 
 # in another terminal on the eboard directory run:
 sail npm install
